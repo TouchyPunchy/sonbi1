@@ -12,7 +12,6 @@
     let audioCtx;
     let source;
     let analyser;
-    let distortion;
 
     onMount(() => {
         canvas = document.getElementById('viz');
@@ -23,7 +22,10 @@
         audioCtx.resume();
         source = audioCtx.createMediaElementSource(audio);
         analyser = audioCtx.createAnalyser();
+        analyser.minDecibels = -90;
+        analyser.maxDecibels = 0;
         source.connect(analyser);
+        source.connect(audioCtx.destination);
         draw_viz();
     });
 
@@ -43,7 +45,6 @@
         let dataArray = new Uint8Array(bufferLength);
         analyser.getByteTimeDomainData(dataArray);
         ctx.clearRect(0, 0, w, h);
-
         function draw() {
             let drawVisual = requestAnimationFrame(draw);
             analyser.getByteTimeDomainData(dataArray);
