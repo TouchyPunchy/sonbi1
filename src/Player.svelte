@@ -1,5 +1,6 @@
 <script>
     import { onMount } from 'svelte';
+    import Visualizer from './Visualizer.svelte';
 
     let audio;
     let time = 0;
@@ -35,6 +36,11 @@
                 audio.src = folder + "/" + sounds[current_sound_index];
             }
         });
+
+        // const canvas = document.getElementById('viz');
+        // const ctx = canvas.getContext('2d');
+        // ctx.fillStyle = 'orange';
+        // ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     });
 
     function toggle_play_pause(){
@@ -150,6 +156,7 @@
             bind:duration
             bind:currentTime={time}
             ></audio>
+        <Visualizer/>
         <div class="info text-light">
             <span class="time"><strong>{format(time)} / {format(duration)}</strong> | </span>{current_sound_src}
         </div>
@@ -178,6 +185,7 @@
             <button on:click={volume_down}><i class='fas fa-volume-down'></i></button> 
             <button on:click={volume_up}><i class='fas fa-volume-up'></i></button>
         </div>
+        
     </div>  
     <div class="playlist bg-dark text-light">
         <div class="playlist_items_wrapper">
@@ -219,7 +227,7 @@
     }
     /* ---- Player ---- */
 	.player{
-        padding: 1em 1em 0 1em ;
+        padding: 0 1em 0 1em ;
         /* Required for text-overflow to do anything */
         min-width: 0;
     }
@@ -243,6 +251,7 @@
     progress::-moz-progress-bar { background-color: #ff9900; }
 	progress::-webkit-progress-value { background-color: #ff9900; }
 
+   
     /* ---- Playlist ---- */
     .playlist{
         overflow: hidden;
