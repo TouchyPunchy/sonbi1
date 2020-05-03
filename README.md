@@ -2,7 +2,7 @@
 
 Mini audio player in [Svelte](https://svelte.dev/).
 
-<img src="doc/capture/sonbi1_00.png" width="360">
+<img src="doc/capture/sonbi1_01.png" width="360">
 
 ## Get started
 

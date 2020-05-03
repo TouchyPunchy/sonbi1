@@ -15,21 +15,19 @@
     let distortion;
 
     onMount(() => {
-        // audio.addEventListener('play', () => {
-            canvas = document.getElementById('viz');
-            ctx = canvas.getContext('2d');
-            w = ctx.canvas.width;
-            h = ctx.canvas.height;
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            audioCtx.resume();
-            source = audioCtx.createMediaElementSource(audio);
-            analyser = audioCtx.createAnalyser();
-            distortion = audioCtx.createWaveShaper();
-            source.connect(analyser);
-            analyser.connect(distortion);
-            distortion.connect(audioCtx.destination);
-            draw_viz();
-        // });
+        canvas = document.getElementById('viz');
+        ctx = canvas.getContext('2d');
+        w = ctx.canvas.width;
+        h = ctx.canvas.height;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        audioCtx.resume();
+        source = audioCtx.createMediaElementSource(audio);
+        analyser = audioCtx.createAnalyser();
+        distortion = audioCtx.createWaveShaper();
+        source.connect(analyser);
+        analyser.connect(distortion);
+        distortion.connect(audioCtx.destination);
+        draw_viz();
     });
 
     function draw_viz(){
@@ -97,8 +95,6 @@
         }
         draw();
     }
-
-
 </script>
 <div>
     <canvas id="viz" on:click={draw_viz}></canvas>
