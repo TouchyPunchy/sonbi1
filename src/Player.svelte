@@ -11,6 +11,7 @@
     let mute = false;
     let loop = false;
     let shuffle = false;
+    let viz = false;
 
     let folder = "sounds";
     let sounds = [];
@@ -81,6 +82,10 @@
             volume = volume_save;
         }
         mute = !mute;
+    }
+
+    function toggle_viz(){
+        viz = ! viz;
     }
 
     function volume_up(){
@@ -156,7 +161,9 @@
             bind:duration
             bind:currentTime={time}
             ></audio>
+        {#if viz === true}
         <Visualizer/>
+        {/if}
         <div class="info text-light">
             <span class="time"><strong>{format(time)} / {format(duration)}</strong> | </span>{current_sound_src}
         </div>
@@ -182,8 +189,9 @@
             <button class:bg-primary={shuffle} on:click={toggle_shuffle}><i class='fas fa-random'></i></button> 
             <button class:bg-primary={loop} on:click={toggle_loop}><i class='fas fa-redo'></i></button> 
             <button class:bg-primary={mute} on:click={volume_mute}><i class='fas fa-volume-mute'></i></button> 
-            <button on:click={volume_down}><i class='fas fa-volume-down'></i></button> 
-            <button on:click={volume_up}><i class='fas fa-volume-up'></i></button>
+            <button class:bg-primary={viz} on:click={toggle_viz}><i class='fas fa-signal'></i></button> 
+            <!-- <button on:click={volume_down}><i class='fas fa-volume-down'></i></button> 
+            <button on:click={volume_up}><i class='fas fa-volume-up'></i></button> -->
         </div>
         
     </div>  
@@ -205,7 +213,8 @@
     .bg-light{ background-color: white; }
 
     button{
-        width: 2em;
+        width: 2.3em;
+        height: 2.3em;
         cursor: pointer;
         border: #2b2b2b 1px solid;
         border-radius: 0;
@@ -221,17 +230,18 @@
     .container{
         display: grid;
         height: 100vh;
-        padding: 1em;
+        padding: 0.5em 1em 1em 1em;
         box-sizing: border-box;
         grid-template-rows: [row1-start] auto [row1-end] 1fr [last-line];
     }
     /* ---- Player ---- */
 	.player{
-        padding: 0 1em 0 1em ;
+        padding: 0.5em 1em 0 1em ;
         /* Required for text-overflow to do anything */
         min-width: 0;
     }
     .info{
+        padding-top: 0.5em;
         padding-bottom : 1em;
         text-overflow: ellipsis;
         /* Required for text-overflow to do anything */

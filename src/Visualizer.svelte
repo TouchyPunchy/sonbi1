@@ -96,9 +96,7 @@
         draw();
     }
 </script>
-<div>
     <canvas id="viz" on:click={draw_viz}></canvas>
-</div>
 <style>
     #viz{
         margin-top: 0.5em;
