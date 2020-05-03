@@ -23,10 +23,7 @@
         audioCtx.resume();
         source = audioCtx.createMediaElementSource(audio);
         analyser = audioCtx.createAnalyser();
-        distortion = audioCtx.createWaveShaper();
         source.connect(analyser);
-        analyser.connect(distortion);
-        distortion.connect(audioCtx.destination);
         draw_viz();
     });
 
