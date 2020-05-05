@@ -1,0 +1,17 @@
+{
+    "short_name": "SonBi1",
+    "name": "SonBi1",
+    "icons": [
+      {
+        "src":"favicon.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ],
+    "start_url": "/",
+    "scope": "https://labelcarrote.com/sonbi1",
+    "background_color": "#2b2b2b",
+    "theme_color": "#2b2b2b",
+    "display": "fullscreen",
+    "orientation": "portrait"
+  }

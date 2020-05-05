@@ -22,8 +22,8 @@
         audioCtx.resume();
         source = audioCtx.createMediaElementSource(audio);
         analyser = audioCtx.createAnalyser();
-        analyser.minDecibels = -90;
-        analyser.maxDecibels = 0;
+        // analyser.minDecibels = -90;
+        // analyser.maxDecibels = 0;
         source.connect(analyser);
         source.connect(audioCtx.destination);
         draw_viz();
@@ -50,7 +50,7 @@
             analyser.getByteTimeDomainData(dataArray);
             ctx.fillStyle = bg_color;
             ctx.fillRect(0, 0, w, h);
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 2;
             ctx.strokeStyle = stroke_color;
             ctx.beginPath();
             let sliceWidth = w * 1.0 / bufferLength;
@@ -81,13 +81,13 @@
             analyser.getByteFrequencyData(dataArray);
             ctx.fillStyle = bg_color;
             ctx.fillRect(0, 0, w, h);
-            let barWidth = (w / bufferLength) * 2.5;
+            let barWidth = Math.floor((w / bufferLength) * 2);
             let barHeight;
             let x = 0;
             for(var i = 0; i < bufferLength; i++) {
                 barHeight = dataArray[i] / 2;
                 ctx.fillStyle = 'rgb(' + (barHeight + 100) + ',100,00)';
-                ctx.fillRect(x,h - barHeight / 2,barWidth,barHeight);
+                ctx.fillRect(x,h - barHeight / 2, barWidth, barHeight);
                 x += barWidth + 1;
             }
         }

@@ -396,7 +396,7 @@ var app = (function () {
     			canvas_1 = element("canvas");
     			attr_dev(canvas_1, "id", "viz");
     			attr_dev(canvas_1, "class", "svelte-uc1y1x");
-    			add_location(canvas_1, file, 96, 4, 3121);
+    			add_location(canvas_1, file, 96, 4, 3139);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -448,9 +448,11 @@ var app = (function () {
     		audioCtx.resume();
     		source = audioCtx.createMediaElementSource(audio);
     		analyser = audioCtx.createAnalyser();
-    		analyser.minDecibels = -90;
-    		analyser.maxDecibels = 0;
+
+    		// analyser.minDecibels = -90;
+    		// analyser.maxDecibels = 0;
     		source.connect(analyser);
+
     		source.connect(audioCtx.destination);
     		draw_viz();
     	});
@@ -477,7 +479,7 @@ var app = (function () {
     			analyser.getByteTimeDomainData(dataArray);
     			ctx.fillStyle = bg_color;
     			ctx.fillRect(0, 0, w, h);
-    			ctx.lineWidth = 3;
+    			ctx.lineWidth = 2;
     			ctx.strokeStyle = stroke_color;
     			ctx.beginPath();
     			let sliceWidth = w * 1 / bufferLength;
@@ -508,7 +510,7 @@ var app = (function () {
     			analyser.getByteFrequencyData(dataArray);
     			ctx.fillStyle = bg_color;
     			ctx.fillRect(0, 0, w, h);
-    			let barWidth = w / bufferLength * 2.5;
+    			let barWidth = Math.floor(w / bufferLength * 2);
     			let barHeight;
     			let x = 0;
 
