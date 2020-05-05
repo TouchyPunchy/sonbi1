@@ -8,8 +8,8 @@
         "type": "image/png"
       }
     ],
-    "start_url": "/",
-    "scope": "https://labelcarrote.com/sonbi1",
+    "start_url": "/sonbi1",
+    "scope": "https://labelcarrote.com",
     "background_color": "#2b2b2b",
     "theme_color": "#2b2b2b",
     "display": "fullscreen",
