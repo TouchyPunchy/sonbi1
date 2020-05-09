@@ -2,9 +2,11 @@
 	import Player from './Player.svelte';
 	import '@fortawesome/fontawesome-free/js/fontawesome.min.js';
 	import '@fortawesome/fontawesome-free/js/solid.min.js';
+
+	export let path_to_music;
 </script>
 <main>
-	<Player/>
+	<Player path_to_music={path_to_music}/>
 </main>
 <style>
 	@media (min-width: 640px) {

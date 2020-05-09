@@ -97,7 +97,9 @@
 		draw();
 	}
 </script>
-	<canvas bind:this={canvas} on:click={draw_viz}></canvas>
+
+<canvas bind:this={canvas} on:click={draw_viz}></canvas>
+
 <style>
 	canvas{
 		margin-bottom: 0.5em;

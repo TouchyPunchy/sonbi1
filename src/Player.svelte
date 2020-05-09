@@ -2,6 +2,9 @@
 	import { onMount } from 'svelte';
 	import Visualizer from './Visualizer.svelte';
 
+	export let path_to_music = 'sounds';
+	const playlist_file_name = 'playlist.json';
+
 	let audio;
 	let audio_ctx;
 	let media_source;
@@ -15,16 +18,15 @@
 	let shuffle = false;
 	let viz = false;
 
-	let folder = "sounds";
 	let sounds = [];
 
 	let current_sound_index = 0;
 	$: current_sound = (sounds != null && sounds[current_sound_index] != null) 
 		? sounds[current_sound_index] 
-		: "";
+		: '';
 	$: current_sound_src = (sounds != null && sounds[current_sound_index] != null) 
-		? folder + "/" + sounds[current_sound_index] 
-		: "";
+		? path_to_music + '/' + sounds[current_sound_index] 
+		: '';
 
 	let touch_screenX;
 	let touch_screenY;
@@ -33,23 +35,32 @@
 	let touch_target;
 
 	onMount(() => {
-		fetch('playlist.json')
+		init_playlist();
+	});
+
+	function init_audio_context(){
+		let options = { 
+			sampleRate: 44100 // defaut sampleRate : 48000 vs 44100 for mp3
+		}; 
+		audio_ctx = new (window.AudioContext || window.webkitAudioContext)(options);
+		// console.log(audio_ctx.sampleRate);
+		media_source = audio_ctx.createMediaElementSource(audio);
+		media_source.connect(audio_ctx.destination);
+	}
+
+	function init_playlist(){
+		fetch(path_to_music + '/' + playlist_file_name)
 		.then((resp) => resp.json())
 		.then(function(response){
 			sounds = response.songs;
 			if(sounds[current_sound_index] != null){
 				audio = document.getElementById('audio');
-				audio.src = folder + "/" + sounds[current_sound_index];
+				audio.src = path_to_music + '/' + sounds[current_sound_index];
 			}
+		})
+		.catch((error)=> {
+			console.error('Error: no ['+ playlist_file_name +'] file found in path_to_music ['+ path_to_music +']')
 		});
-	});
-
-	function init_audio_context(){
-		let options = { sampleRate: 44100 }; // defaut sampleRate : 48000 vs 44100 for mp3
-		audio_ctx = new (window.AudioContext || window.webkitAudioContext)(options);
-		// console.log(audio_ctx.sampleRate);
-		media_source = audio_ctx.createMediaElementSource(audio);
-		media_source.connect(audio_ctx.destination);
 	}
 
 	function toggle_play_pause(){
@@ -132,9 +143,9 @@
 		let mouseEv;
 		switch(e.type)
 		{
-			case "touchstart": mouseEv="mousedown"; break;  
-			case "touchend":   mouseEv="mouseup"; break;
-			case "touchmove":  mouseEv="mousemove"; break;
+			case 'touchstart': mouseEv = 'mousedown'; break;  
+			case 'touchend': mouseEv = 'mouseup'; break;
+			case 'touchmove':  mouseEv = 'mousemove'; break;
 			default: return;
 		}
 		let mouseEvent = new MouseEvent(mouseEv,{ 
@@ -151,21 +162,20 @@
 
 	function play_sound(sound_index){
 		current_sound_index = sound_index;
-		audio.src = folder + "/" + sounds[current_sound_index];
+		audio.src = path_to_music + '/' + sounds[current_sound_index];
 		audio.play();
 	}
 
 	function scroll_to_sound(){
-		let elt = document.getElementById("item_"+current_sound_index);
+		let elt = document.getElementById('item_' + current_sound_index);
 		elt.scrollIntoView({behavior: "smooth"});
 	}
 </script>
 
 <div class="container">
-	
-	<div class="playlist bg-dark text-light">
-		<div class="playlist_items_wrapper">
-			<div class="playlist_items bg-light text-dark">
+	<div class="playlist bg-dark">
+		<div class="playlist_items_wrapper bg-light text-dark">
+			<div class="playlist_items">
 				{#each sounds as sound, i }
 					<div class="playlist_item" id="item_{i}" class:selected={ current_sound_index === i} on:click={() => play_sound(i)}>{i+1}. {sound}</div>
 				{/each}
@@ -240,17 +250,15 @@
 	button{
 		background-color: var(--dark-color);
 		color: var(--light-color);
+		border: var(--dark-color) 1px solid;
 	}
+	button:focus{ border: var(--primary-color) 1px solid; }
 
 	button{
 		height: 3.5em;
 		cursor: pointer;
-		border: var(--dark-color) 1px solid;
 		border-radius: 0;
-	}
-	button:focus{
-		outline:none;
-		border: var(--primary-color) 1px solid;
+		outline:none;				
 	}
 	button::-moz-focus-inner {
 		border: 0;
@@ -303,7 +311,6 @@
 		max-height: 100%;
 		overflow-y: scroll;
 		scrollbar-width: none;
-		background-color: var(--light-color)
 	}
 	.playlist_items_wrapper::-webkit-scrollbar{ display: none; }
 	.playlist_items{
