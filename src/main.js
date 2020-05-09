@@ -1,7 +1,7 @@
-import App from './App.svelte';
+import Sonbi1 from './Sonbi1.svelte';
 
-const app = new App({
-	target: document.body,
+const app = new Sonbi1({
+	target: document.querySelector('main'),
 	props: { path_to_music : 'sounds'}
 });
 

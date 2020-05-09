@@ -1,4 +1,6 @@
 <script>
+	import '@fortawesome/fontawesome-free/js/fontawesome.min.js';
+	import '@fortawesome/fontawesome-free/js/solid.min.js';
 	import { onMount } from 'svelte';
 	import Visualizer from './Visualizer.svelte';
 
@@ -255,6 +257,8 @@
 	button:focus{ border: var(--primary-color) 1px solid; }
 
 	button{
+		font-family: inherit;
+		font-size: inherit;
 		height: 3.5em;
 		cursor: pointer;
 		border-radius: 0;
