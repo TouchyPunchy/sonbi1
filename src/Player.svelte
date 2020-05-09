@@ -3,6 +3,8 @@
     import Visualizer from './Visualizer.svelte';
 
     let audio;
+    let audio_ctx;
+    let media_source;
     let time = 0;
     let duration;
     let paused = true;
@@ -35,14 +37,18 @@
             if(sounds[current_sound_index] != null){
                 audio = document.getElementById('audio');
                 audio.src = folder + "/" + sounds[current_sound_index];
+                
             }
         });
-
-        // const canvas = document.getElementById('viz');
-        // const ctx = canvas.getContext('2d');
-        // ctx.fillStyle = 'orange';
-        // ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     });
+
+    function init_audio_context(){
+        let options = { sampleRate: 44100 }; // defaut sampleRate : 48000 vs 44100 for mp3
+        audio_ctx = new (window.AudioContext || window.webkitAudioContext)(options);
+        // console.log(audio_ctx.sampleRate);
+        media_source = audio_ctx.createMediaElementSource(audio);
+        media_source.connect(audio_ctx.destination);
+    }
 
     function toggle_play_pause(){
         paused = !paused;
@@ -74,7 +80,7 @@
         loop = !loop;
     }
 
-    function volume_mute(){
+    function toggle_volume_mute(){
         if(mute === false){
             volume_save = volume;
             volume = 0;
@@ -85,6 +91,7 @@
     }
 
     function toggle_viz(){
+        if(!audio_ctx) init_audio_context();
         viz = ! viz;
     }
 
@@ -153,6 +160,16 @@
 </script>
 
 <div class="container">
+    
+    <div class="playlist bg-dark text-light">
+        <div class="playlist_items_wrapper">
+            <div class="playlist_items bg-light text-dark">
+                {#each sounds as sound, i }
+                    <div class="playlist_item" id="item_{i}" class:selected={ current_sound_index === i} on:click={() => play_sound(i)}>{i+1}. {sound}</div>
+                {/each}
+            </div>
+        </div>
+    </div>
     <div class="player bg-dark"> 
         <audio id="audio"
             on:ended={next_sound}
@@ -162,7 +179,7 @@
             bind:currentTime={time}
             ></audio>
         {#if viz === true}
-        <Visualizer/>
+        <Visualizer bind:audio_ctx bind:media_source/>
         {/if}
         <div class="info text-light">
             <span class="time"><strong>{format(time)} / {format(duration)}</strong> | </span>{current_sound_src}
@@ -176,45 +193,51 @@
                 on:touchend={handleTouchmove}/>
         </div>
         <div class="controls">
-            <button on:click={previous_sound}><i class='fas fa-step-backward'></i></button> 
-            <button on:click={toggle_play_pause}>
-            {#if paused === true}
-                <span><i class='fas fa-play'></i></span>
-            {:else}
-                <span><i class='fas fa-pause'></i></span>
-            {/if}
-            </button> 
-            <button on:click={stop}><i class='fas fa-stop'></i></button> 
-            <button on:click={next_sound}><i class='fas fa-step-forward'></i></button> 
-            <button class:bg-primary={shuffle} on:click={toggle_shuffle}><i class='fas fa-random'></i></button> 
-            <button class:bg-primary={loop} on:click={toggle_loop}><i class='fas fa-redo'></i></button> 
-            <button class:bg-primary={mute} on:click={volume_mute}><i class='fas fa-volume-mute'></i></button> 
-            <button class:bg-primary={viz} on:click={toggle_viz}><i class='fas fa-signal'></i></button> 
-            <!-- <button on:click={volume_down}><i class='fas fa-volume-down'></i></button> 
-            <button on:click={volume_up}><i class='fas fa-volume-up'></i></button> -->
-        </div>
-        
-    </div>  
-    <div class="playlist bg-dark text-light">
-        <div class="playlist_items_wrapper">
-            <div class="playlist_items bg-light text-dark">
-                {#each sounds as sound, i }
-                    <div class="playlist_item" id="item_{i}" class:selected={ current_sound_index === i} on:click={() => play_sound(i)}>{i+1}. {sound}</div>
-                {/each}
+            <div class="flexbox">
+                <button on:click={previous_sound}><i class='fas fa-step-backward'></i></button> 
+                <button on:click={toggle_play_pause}>
+                {#if paused === true}
+                    <span><i class='fas fa-play'></i></span>
+                {:else}
+                    <span><i class='fas fa-pause'></i></span>
+                {/if}
+                </button> 
+                <button on:click={stop}><i class='fas fa-stop'></i></button> 
+                <button on:click={next_sound}><i class='fas fa-step-forward'></i></button> 
+            </div>
+            <div class="flexbox">
+                <button class:bg-primary={shuffle} on:click={toggle_shuffle}><i class='fas fa-random'></i></button> 
+                <button class:bg-primary={loop} on:click={toggle_loop}><i class='fas fa-redo'></i></button> 
+                <button class:bg-primary={mute} on:click={toggle_volume_mute}><i class='fas fa-volume-mute'></i></button> 
+                <button class:bg-primary={viz} on:click={toggle_viz}><i class='fas fa-signal'></i></button> 
+                <!-- <button on:click={volume_down}><i class='fas fa-volume-down'></i></button> 
+                <button on:click={volume_up}><i class='fas fa-volume-up'></i></button> -->
             </div>
         </div>
-    </div>
+    </div>  
 </div>
 <style>
-    .text-light{ color: white; }
-    .text-dark{ color: #2b2b2b; }
-    .bg-primary, .selected{ background-color: #ff9900; }
-    .bg-dark{ background-color: #2b2b2b; }
-    .bg-light{ background-color: white; }
+    :root{
+        --text-light-color: white;
+        --text-dark-color: #2b2b2b;
+        --text-primary-color: #ff9900;
+        --bg-light-color: white;
+        --bg-dark-color: #2b2b2b;
+        --bg-primary-color: #ff9900;
+    }
+    .text-light{ color: var(--text-light-color); }
+    .text-dark{ color: var(--text-dark-color); }
+    .bg-primary, .selected{ background-color: var(--bg-primary-color); }
+    .bg-dark{ background-color: var(--bg-dark-color); }
+    .bg-light{ background-color: var(--bg-light-color); }
 
     button{
-        width: 2.3em;
-        height: 2.3em;
+        background-color: var(--bg-dark-color);
+        color: var(--text-light-color);
+    }
+
+    button{
+        height: 3em;
         cursor: pointer;
         border: #2b2b2b 1px solid;
         border-radius: 0;
@@ -232,16 +255,16 @@
         height: 100vh;
         padding: 0.5em 1em 1em 1em;
         box-sizing: border-box;
-        grid-template-rows: [row1-start] auto [row1-end] 1fr [last-line];
+        /* grid-template-rows: [row1-start] auto [row1-end] 1fr [last-line]; */
+        grid-template-rows: [row1-start] 1fr [row1-end] auto [last-line];
     }
     /* ---- Player ---- */
 	.player{
-        padding: 0.5em 1em 0 1em ;
+        padding: 0em 1em 1em 1em ;
         /* Required for text-overflow to do anything */
         min-width: 0;
     }
     .info{
-        padding-top: 0.5em;
         padding-bottom : 1em;
         text-overflow: ellipsis;
         /* Required for text-overflow to do anything */
@@ -260,17 +283,25 @@
 	progress::-webkit-progress-bar { background-color: white; }
     progress::-moz-progress-bar { background-color: #ff9900; }
 	progress::-webkit-progress-value { background-color: #ff9900; }
-
    
+    .flexbox{
+        display:flex;
+    }
+    .flexbox button{
+        flex: 1 1 0px;
+    }
+
     /* ---- Playlist ---- */
     .playlist{
         overflow: hidden;
         padding: 1em;
     }
     .playlist_items_wrapper{
+        height: 100%;
         max-height: 100%;
         overflow-y: scroll;
         scrollbar-width: none;
+        background-color: var(--bg-light-color)
     }
     .playlist_items_wrapper::-webkit-scrollbar{ display: none; }
     .playlist_items{

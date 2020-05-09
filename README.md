@@ -1,8 +1,8 @@
 # SonBi1
 
-Mini audio player in [Svelte](https://svelte.dev/).
+Mini audio player in [Svelte](https://svelte.dev/)
 
-<img src="doc/capture/sonbi1_01.png" width="360">
+<img src="doc/capture/sonbi1_02.png" width="360">
 
 ## Get started
 

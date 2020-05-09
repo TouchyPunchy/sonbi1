@@ -1,5 +1,8 @@
 <script>
-    import { onMount } from 'svelte';
+    import { onMount, onDestroy } from 'svelte';
+
+    export let audio_ctx;
+    export let media_source;
 
     // https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Visualizations_with_Web_Audio_API
     const bg_color = '#2b2b2b';
@@ -9,25 +12,26 @@
     let ctx;
     let w;
     let h;
-    let audioCtx;
-    let source;
     let analyser;
+    let draw_visual; 
 
     onMount(() => {
-        canvas = document.getElementById('viz');
         ctx = canvas.getContext('2d');
         w = ctx.canvas.width;
         h = ctx.canvas.height;
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        audioCtx.resume();
-        source = audioCtx.createMediaElementSource(audio);
-        analyser = audioCtx.createAnalyser();
-        // analyser.minDecibels = -90;
-        // analyser.maxDecibels = 0;
-        source.connect(analyser);
-        source.connect(audioCtx.destination);
+        analyser = audio_ctx.createAnalyser();
+        analyser.minDecibels = -70;
+        //analyser.maxDecibels = -10;
+        media_source.connect(analyser);
         draw_viz();
     });
+
+    onDestroy(() => {
+        console.log('the component is being destroyed');
+        cancelAnimationFrame(draw_visual);
+        draw_visual = undefined;
+        media_source.disconnect(analyser);
+	});
 
     function draw_viz(){
         if(viz_index === 0){
@@ -46,7 +50,7 @@
         analyser.getByteTimeDomainData(dataArray);
         ctx.clearRect(0, 0, w, h);
         function draw() {
-            let drawVisual = requestAnimationFrame(draw);
+            draw_visual = requestAnimationFrame(draw);
             analyser.getByteTimeDomainData(dataArray);
             ctx.fillStyle = bg_color;
             ctx.fillRect(0, 0, w, h);
@@ -71,13 +75,13 @@
     }
 
     function draw_frequencybars(){
-        analyser.fftSize = 256;
+        analyser.fftSize = 64;
         let bufferLength = analyser.frequencyBinCount;
         let dataArray = new Uint8Array(bufferLength);
         ctx.clearRect(0, 0, w, h);
 
         function draw() {
-            let drawVisual = requestAnimationFrame(draw);
+            draw_visual = requestAnimationFrame(draw);
             analyser.getByteFrequencyData(dataArray);
             ctx.fillStyle = bg_color;
             ctx.fillRect(0, 0, w, h);
@@ -87,19 +91,18 @@
             for(var i = 0; i < bufferLength; i++) {
                 barHeight = dataArray[i] / 2;
                 ctx.fillStyle = 'rgb(' + (barHeight + 100) + ',100,00)';
-                ctx.fillRect(x,h - barHeight / 2, barWidth, barHeight);
+                ctx.fillRect(x,h - barHeight, barWidth, barHeight);
                 x += barWidth + 1;
             }
         }
         draw();
     }
 </script>
-    <canvas id="viz" on:click={draw_viz}></canvas>
+    <canvas bind:this={canvas} on:click={draw_viz}></canvas>
 <style>
-    #viz{
-        margin-top: 0.5em;
+    canvas{
         margin-bottom: 0.5em;
         width: 100%;
-        height: 2em;
+        height: 6em;
     }
 </style>
