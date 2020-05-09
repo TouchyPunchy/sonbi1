@@ -19,6 +19,9 @@
     let sounds = [];
 
     let current_sound_index = 0;
+    $: current_sound = (sounds != null && sounds[current_sound_index] != null) 
+        ? sounds[current_sound_index] 
+        : "";
     $: current_sound_src = (sounds != null && sounds[current_sound_index] != null) 
         ? folder + "/" + sounds[current_sound_index] 
         : "";
@@ -182,7 +185,7 @@
         <Visualizer bind:audio_ctx bind:media_source/>
         {/if}
         <div class="info text-light">
-            <span class="time"><strong>{format(time)} / {format(duration)}</strong> | </span>{current_sound_src}
+            <span class="time"><strong>{format(time)} / {format(duration)}</strong> | </span>{current_sound}
         </div>
         <div class="progress">
             <progress class="bg-light"
@@ -194,22 +197,29 @@
         </div>
         <div class="controls">
             <div class="flexbox">
-                <button on:click={previous_sound}><i class='fas fa-step-backward'></i></button> 
-                <button on:click={toggle_play_pause}>
+                <button title="Previous track" 
+                    on:click={previous_sound}><i class='fas fa-step-backward'></i></button> 
+                <button title="Play / Pause"
+                    on:click={toggle_play_pause}>
                 {#if paused === true}
                     <span><i class='fas fa-play'></i></span>
                 {:else}
                     <span><i class='fas fa-pause'></i></span>
                 {/if}
                 </button> 
-                <button on:click={stop}><i class='fas fa-stop'></i></button> 
-                <button on:click={next_sound}><i class='fas fa-step-forward'></i></button> 
+                <button title="Stop"
+                    on:click={stop}><i class='fas fa-stop'></i></button> 
+                <button title="Next track"
+                    on:click={next_sound}><i class='fas fa-step-forward'></i></button> 
             </div>
             <div class="flexbox">
-                <button class:bg-primary={shuffle} on:click={toggle_shuffle}><i class='fas fa-random'></i></button> 
-                <button class:bg-primary={loop} on:click={toggle_loop}><i class='fas fa-redo'></i></button> 
-                <button class:bg-primary={mute} on:click={toggle_volume_mute}><i class='fas fa-volume-mute'></i></button> 
-                <button class:bg-primary={viz} on:click={toggle_viz}><i class='fas fa-signal'></i></button> 
+                <button title="Toggle Shuffle"
+                    class:bg-primary={shuffle} on:click={toggle_shuffle}><i class='fas fa-random'></i></button> 
+                <button title="Toggle Track Loop"
+                    class:bg-primary={loop} on:click={toggle_loop}><i class='fas fa-redo'></i></button> 
+                <button title="Mute / Unmute" class:bg-primary={mute} on:click={toggle_volume_mute}><i class='fas fa-volume-mute'></i></button> 
+                <button title="Toggle Waveform" 
+                    class:bg-primary={viz} on:click={toggle_viz}><i class='fas fa-signal'></i></button> 
                 <!-- <button on:click={volume_down}><i class='fas fa-volume-down'></i></button> 
                 <button on:click={volume_up}><i class='fas fa-volume-up'></i></button> -->
             </div>
@@ -218,33 +228,30 @@
 </div>
 <style>
     :root{
-        --text-light-color: white;
-        --text-dark-color: #2b2b2b;
-        --text-primary-color: #ff9900;
-        --bg-light-color: white;
-        --bg-dark-color: #2b2b2b;
-        --bg-primary-color: #ff9900;
+        --light-color: white;
+        --dark-color: #2b2b2b;
+        --primary-color: #ff9900;
     }
-    .text-light{ color: var(--text-light-color); }
-    .text-dark{ color: var(--text-dark-color); }
-    .bg-primary, .selected{ background-color: var(--bg-primary-color); }
-    .bg-dark{ background-color: var(--bg-dark-color); }
-    .bg-light{ background-color: var(--bg-light-color); }
+    .text-light{ color: var(--light-color); }
+    .text-dark{ color: var(--dark-color); }
+    .bg-primary, .selected{ background-color: var(--primary-color); }
+    .bg-dark{ background-color: var(--dark-color); }
+    .bg-light{ background-color: var(--light-color); }
 
     button{
-        background-color: var(--bg-dark-color);
-        color: var(--text-light-color);
+        background-color: var(--dark-color);
+        color: var(--light-color);
     }
 
     button{
-        height: 3em;
+        height: 3.5em;
         cursor: pointer;
-        border: #2b2b2b 1px solid;
+        border: var(--dark-color) 1px solid;
         border-radius: 0;
     }
     button:focus{
         outline:none;
-        border: #ff9900 1px solid;
+        border: var(--primary-color) 1px solid;
     }
     button::-moz-focus-inner {
         border: 0;
@@ -255,7 +262,6 @@
         height: 100vh;
         padding: 0.5em 1em 1em 1em;
         box-sizing: border-box;
-        /* grid-template-rows: [row1-start] auto [row1-end] 1fr [last-line]; */
         grid-template-rows: [row1-start] 1fr [row1-end] auto [last-line];
     }
     /* ---- Player ---- */
@@ -265,13 +271,14 @@
         min-width: 0;
     }
     .info{
-        padding-bottom : 1em;
+        padding-top: 1em;
+        padding-bottom : 2em;
         text-overflow: ellipsis;
         /* Required for text-overflow to do anything */
         white-space: nowrap;
         overflow: hidden;
     }
-    .progress{ padding-bottom : 1em; }
+    .progress{ padding-bottom : 2em; }
     progress {
         border: 0;
 		display: block;
@@ -280,9 +287,9 @@
 		-webkit-appearance: none;
         appearance: none;
     }
-	progress::-webkit-progress-bar { background-color: white; }
-    progress::-moz-progress-bar { background-color: #ff9900; }
-	progress::-webkit-progress-value { background-color: #ff9900; }
+	progress::-webkit-progress-bar { background-color: var(--light-color); }
+    progress::-moz-progress-bar { background-color: var(--primary-color); }
+	progress::-webkit-progress-value { background-color: var(--primary-color); }
    
     .flexbox{
         display:flex;
@@ -301,7 +308,7 @@
         max-height: 100%;
         overflow-y: scroll;
         scrollbar-width: none;
-        background-color: var(--bg-light-color)
+        background-color: var(--light-color)
     }
     .playlist_items_wrapper::-webkit-scrollbar{ display: none; }
     .playlist_items{
