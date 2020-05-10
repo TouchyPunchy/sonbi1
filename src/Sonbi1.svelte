@@ -285,14 +285,14 @@
 		min-width: 0;
 	}
 	.info{
-		padding-top: 1rem;
-		padding-bottom : 2rem;
+		padding-top: 0.5rem;
+		padding-bottom : 1.5rem;
 		text-overflow: ellipsis;
 		/* Required for text-overflow to do anything */
 		white-space: nowrap;
 		overflow: hidden;
 	}
-	.progress{ padding-bottom : 2rem; }
+	.progress{ padding-bottom : 1rem; }
 	progress {
 		border: 0;
 		display: block;
@@ -306,7 +306,10 @@
 	progress::-webkit-progress-value { background-color: var(--primary-color); }
    
 	.flexbox{ display:flex; }
-	.flexbox button{ flex: 1 1 0px; }
+	.flexbox button{ 
+		flex: 1 1 0px; 
+		margin: 0.25rem; 
+	}
 
 	/* ---- Playlist ---- */
 	.playlist{
