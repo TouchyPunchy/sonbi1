@@ -31,7 +31,7 @@
 	let touch_clientX;
 	let touch_clientY;
 	let touch_target;
-	
+
 	let key;
 	let key_code;
 
@@ -143,7 +143,7 @@
 	
 	function handle_mousemove(e) {
 		if (!(e.buttons & 1)) return; // mouse not down
-		if (!duration) return; // video not loaded yet
+		if (!duration) return; // audio not loaded yet
 		const { left, right } = this.getBoundingClientRect();
 		time = duration * (e.clientX - left) / (right - left);
 	}
@@ -158,8 +158,7 @@
 			touch_target = touch.target;
 		}
 		let mouseEv;
-		switch(e.type)
-		{
+		switch(e.type) {
 			case 'touchstart': mouseEv = 'mousedown'; break;  
 			case 'touchend': mouseEv = 'mouseup'; break;
 			case 'touchmove':  mouseEv = 'mousemove'; break;
@@ -211,8 +210,7 @@
 	}
 
 	function breadcrumbs(path){
-		if(path == null)
-			return [];
+		if(path == null) return [];
 		let splits = path.split('\/');
 		let crumbs = [];
 		let temp_path = '';
@@ -299,22 +297,23 @@
 			</div>
 			<div class="flexbox">
 				<button title="Toggle Shuffle"
-					class:bg-primary={shuffle} on:click={toggle_shuffle}><i class='fas fa-random'></i></button> 
+					class:bg-primary={shuffle} 
+					on:click={toggle_shuffle}><i class='fas fa-random'></i></button> 
 				<button title="Toggle Track Loop"
-					class:bg-primary={loop} on:click={toggle_loop}><i class='fas fa-redo'></i></button> 
-				<button title="Mute / Unmute" class:bg-primary={mute} on:click={toggle_volume_mute}><i class='fas fa-volume-mute'></i></button> 
+					class:bg-primary={loop} 
+					on:click={toggle_loop}><i class='fas fa-redo'></i></button> 
+				<button title="Mute / Unmute" 
+					class:bg-primary={mute} 
+					on:click={toggle_volume_mute}><i class='fas fa-volume-mute'></i></button> 
 				<button title="Toggle Waveform" 
-					class:bg-primary={viz} on:click={toggle_viz}><i class='fas fa-signal'></i></button> 
-				<!-- <button on:click={volume_down}><i class='fas fa-volume-down'></i></button> 
-				<button on:click={volume_up}><i class='fas fa-volume-up'></i></button> -->
+					class:bg-primary={viz} 
+					on:click={toggle_viz}><i class='fas fa-signal'></i></button> 
 			</div>
 		</div>
 	</div>  
 </div>
 <style>
-	.pointer { cursor: pointer; }
-
-	/* ---- Colors ---- */
+	/* ---- Colors / Pointers ---- */
 	:root{
 		--light-color: white;
 		--dark-color: #2b2b2b;
@@ -327,7 +326,6 @@
 	.bg-secondary{ background-color: var(--secondary-color); }
 	.bg-dark{ background-color: var(--dark-color); }
 	.bg-light{ background-color: var(--light-color); }
-
 	button{
 		background-color: var(--dark-color);
 		color: var(--light-color);
@@ -338,6 +336,8 @@
 	progress::-moz-progress-bar { background-color: var(--primary-color); }
 	progress::-webkit-progress-value { background-color: var(--primary-color); }
 	.text-primary-hover:hover{ color: var(--primary-color); }
+
+	.pointer { cursor: pointer; }
 
 	/* ---- Container ---- */
 	.container{
@@ -402,7 +402,6 @@
 		flex: 1 1 0px; 
 		margin: 0.25rem; 
 	}
-
 	button{
 		font-family: inherit;
 		font-size: 1.5rem;
