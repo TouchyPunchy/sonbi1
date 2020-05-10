@@ -21,6 +21,7 @@
 	let shuffle = false;
 	let viz = false;
 
+	let folders = [];
 	let sounds = [];
 	let current_sound_index = 0;
 
@@ -41,7 +42,7 @@
 	let touch_target;
 
 	onMount(() => {
-		init_playlist();
+		init_playlist(path_to_music);
 	});
 
 	function init_audio_context(){
@@ -53,10 +54,12 @@
 		media_source.connect(audio_ctx.destination);
 	}
 
-	function init_playlist(){
+	function init_playlist(path){
+		path_to_music = path;
 		fetch(path_to_music + '/' + playlist_file_name +'?v='+Math.random())
 		.then((resp) => resp.json())
 		.then(function(response){
+			folders = (response.folders != null) ? response.folders : [];
 			sounds = response.songs;
 			if(sounds[current_sound_index] != null){
 				audio = document.getElementById('audio');
@@ -91,15 +94,19 @@
 	}
 
 	function backward(){
-		if(audio.currentTime - step < 0)
-			audio.currentTime = 0;
-		else
-			audio.currentTime -= step;
+		audio.currentTime = (audio.currentTime - step < 0) ? 0 : audio.currentTime - step;
 	}
 	  
 	function forward(){
-		if(audio.currentTime + step < audio.duration)
-			audio.currentTime += step;
+		if(audio.currentTime + step < audio.duration) audio.currentTime += step;
+	}
+
+	function volume_up(){
+		if(volume + 0.1 <= 1) volume += 0.1;
+	}
+
+	function volume_down(){
+		if(volume - 0.1 >= 0) volume -= 0.1;
 	}
 
 	function toggle_shuffle(){
@@ -125,14 +132,6 @@
 		viz = ! viz;
 	}
 
-	function volume_up(){
-		if(volume + 0.1 <= 1) volume += 0.1;
-	}
-
-	function volume_down(){
-		if(volume - 0.1 >= 0) volume -= 0.1;
-	}
-
 	function format(seconds) {
 		if (isNaN(seconds)) return '...';
 		const minutes = Math.floor(seconds / 60);
@@ -141,21 +140,21 @@
 		return `${minutes}:${seconds}`;
 	}
 	
-	function handleMousemove(e) {
+	function handle_mousemove(e) {
 		if (!(e.buttons & 1)) return; // mouse not down
 		if (!duration) return; // video not loaded yet
 		const { left, right } = this.getBoundingClientRect();
 		time = duration * (e.clientX - left) / (right - left);
 	}
 
-	function handleTouchmove(e) {
+	function handle_touchmove(e) {
 		if(e.changedTouches.length > 0){
-			let theTouch = e.changedTouches[0];
-			touch_screenX = theTouch.screenX;
-			touch_screenY = theTouch.screenY;
-			touch_clientX = theTouch.clientX;
-			touch_clientY = theTouch.clientY;
-			touch_target = theTouch.target;
+			let touch = e.changedTouches[0];
+			touch_screenX = touch.screenX;
+			touch_screenY = touch.screenY;
+			touch_clientX = touch.clientX;
+			touch_clientY = touch.clientY;
+			touch_target = touch.target;
 		}
 		let mouseEv;
 		switch(e.type)
@@ -177,19 +176,20 @@
 		e.preventDefault();
 	}
 
-	function handleKeydown(event) {
+	function handle_keydown(event) {
 		key_code = event.keyCode;
 		key = event.key;
 		switch(key){
 			case 'x': toggle_play_pause(); break;
-			case 'ArrowRight': forward(); break;
-			case 'ArrowLeft': backward(); break;
+			case 'c': stop(); break;
 			case 'b': previous_sound(); break;
 			case 'n': next_sound(); break;
 			case 's': toggle_shuffle(); break;
 			case 'l': toggle_loop(); break;
 			case 'm': toggle_mute(); break;
 			case 'v': toggle_viz(); break;
+			case 'ArrowRight': forward(); break;
+			case 'ArrowLeft': backward(); break;
 			default: break;
 		}
 	}
@@ -204,13 +204,51 @@
 		let elt = document.getElementById('item_' + current_sound_index);
 		elt.scrollIntoView({behavior: "smooth"});
 	}
+
+	function filename(path){
+		return path.replace(/^.*[\\\/]/, '')
+	}
+
+	function breadcrumbs(path){
+		if(path == null)
+			return [];
+		let splits = path.split('\/');
+		let crumbs = [];
+		let temp_path = '';
+		let i = 0;
+		for(const split of splits){
+			let temp = (i === 0) ? split : temp_path + '/' + split;
+			crumbs.push(temp);
+			temp_path = temp;
+			i = i + 1;
+		}
+		return crumbs;
+	}
 </script>
 
-<svelte:window on:keydown={handleKeydown}/>
+<svelte:window on:keydown={handle_keydown}/>
 <div class="container">
+	<div class="breadcrumbs bg-dark text-light">
+			<div>
+			<span><i class='fas fa-folder-open'></i></span>
+			{#each breadcrumbs(path_to_music) as crumb } 
+				/ 
+				<span class="breadcrumb pointer text-primary-hover" 
+					on:click={ init_playlist(crumb) }>
+					{filename(crumb)}
+				</span>
+			{/each}
+			</div>
+		</div>
 	<div class="playlist bg-dark">
 		<div class="playlist_items_wrapper bg-light text-dark">
 			<div class="playlist_items ">
+				{#each folders as folder,i }
+					<div class="playlist_item bg-secondary" id="folder_{i}" on:click={() => init_playlist(folder)}>
+						<i class='fas fa-folder'></i> <strong>{filename(folder)}</strong>
+					</div>
+				{:else}<div></div>
+				{/each}
 				{#each sounds as sound, i }
 					<div class="playlist_item" id="item_{i}" class:selected={ current_sound_index === i} on:click={() => play_sound(i)}>{i+1}. {sound}</div>
 				{/each}
@@ -234,10 +272,10 @@
 		<div class="progress">
 			<progress class="bg-light"
 				value="{(time / duration) || 0}"
-				on:mousemove={handleMousemove}
-				on:touchstart={handleTouchmove}
-				on:touchmove={handleTouchmove} 
-				on:touchend={handleTouchmove}/>
+				on:mousemove={handle_mousemove}
+				on:touchstart={handle_touchmove}
+				on:touchmove={handle_touchmove} 
+				on:touchend={handle_touchmove}/>
 		</div>
 		<div class="controls">
 			<div class="flexbox">
@@ -271,27 +309,34 @@
 	</div>  
 </div>
 <style>
+	.pointer { cursor: pointer; }
+
+	/* ---- Colors ---- */
 	:root{
 		--light-color: white;
 		--dark-color: #2b2b2b;
 		--primary-color: #ff9900;
+		--secondary-color: grey;
 	}
 	.text-light{ color: var(--light-color); }
 	.text-dark{ color: var(--dark-color); }
 	.bg-primary, .selected{ background-color: var(--primary-color); }
+	.bg-secondary{ background-color: var(--secondary-color); }
 	.bg-dark{ background-color: var(--dark-color); }
 	.bg-light{ background-color: var(--light-color); }
-	.bg-gradient{ 
-		background: rgb(255,153,0);
-		background: linear-gradient(177deg, rgba(255,153,0,1) 0%, rgba(0,212,255,1) 100%);
-	}
+
 	button{
 		background-color: var(--dark-color);
 		color: var(--light-color);
 		border: var(--dark-color) 1px solid;
 	}
 	button:focus{ border: var(--primary-color) 1px solid; }
+	progress::-webkit-progress-bar { background-color: var(--light-color); }
+	progress::-moz-progress-bar { background-color: var(--primary-color); }
+	progress::-webkit-progress-value { background-color: var(--primary-color); }
+	.text-primary-hover:hover{ color: var(--primary-color); }
 
+	/* ---- Player ---- */
 	button{
 		font-family: inherit;
 		font-size: 1.5rem;
@@ -309,9 +354,8 @@
 		height: 100vh;
 		padding: 1rem;
 		box-sizing: border-box;
-		grid-template-rows: [row1-start] 1fr [row1-end] auto [last-line];
+		grid-template-rows: auto 1fr auto;
 	}
-	/* ---- Player ---- */
 	.player{
 		padding: 0 1rem 1rem 1rem ;
 		/* Required for text-overflow to do anything */
@@ -334,27 +378,26 @@
 		-webkit-appearance: none;
 		appearance: none;
 	}
-	progress::-webkit-progress-bar { background-color: var(--light-color); }
-	progress::-moz-progress-bar { background-color: var(--primary-color); }
-	progress::-webkit-progress-value { background-color: var(--primary-color); }
-   
 	.flexbox{ display:flex; }
 	.flexbox button{ 
 		flex: 1 1 0px; 
 		margin: 0.25rem; 
 	}
 
+	/* ---- Breadcrumbs ---- */
+
+	.breadcrumbs{ padding: 0.75rem 0 0 1rem; }
+
 	/* ---- Playlist ---- */
 	.playlist{
 		overflow: hidden;
-		padding: 1rem;
+		padding: 0.75rem 1rem;
 	}
 	.playlist_items_wrapper{
 		height: 100%;
 		max-height: 100%;
 		overflow-y: scroll;
 		scrollbar-width: none;
-		
 	}
 	.playlist_items_wrapper::-webkit-scrollbar{ display: none; }
 	.playlist_items{
@@ -370,8 +413,6 @@
 	}
 
 	@media (max-width: 640px) {
-		.container {
-			padding: 0;
-		}
+		.container { padding: 0; }
 	}
 </style>

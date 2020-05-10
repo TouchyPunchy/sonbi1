@@ -676,24 +676,184 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[50] = list[i];
-    	child_ctx[52] = i;
+    	child_ctx[52] = list[i];
+    	child_ctx[54] = i;
     	return child_ctx;
     }
 
-    // (214:4) {#each sounds as sound, i }
-    function create_each_block(ctx) {
-    	let div;
-    	let t0_value = /*i*/ ctx[52] + 1 + "";
+    function get_each_context_1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[55] = list[i];
+    	child_ctx[54] = i;
+    	return child_ctx;
+    }
+
+    function get_each_context_2(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[57] = list[i];
+    	return child_ctx;
+    }
+
+    // (234:3) {#each breadcrumbs(path_to_music) as crumb }
+    function create_each_block_2(ctx) {
     	let t0;
+    	let span;
+    	let t1_value = filename(/*crumb*/ ctx[57]) + "";
     	let t1;
-    	let t2_value = /*sound*/ ctx[50] + "";
     	let t2;
+    	let dispose;
+
+    	const block = {
+    		c: function create() {
+    			t0 = text("/ \r\n\t\t\t\t");
+    			span = element("span");
+    			t1 = text(t1_value);
+    			t2 = space();
+    			attr_dev(span, "class", "breadcrumb pointer text-primary-hover svelte-r849ua");
+    			add_location(span, file$1, 235, 4, 6073);
+    		},
+    		m: function mount(target, anchor, remount) {
+    			insert_dev(target, t0, anchor);
+    			insert_dev(target, span, anchor);
+    			append_dev(span, t1);
+    			append_dev(span, t2);
+    			if (remount) dispose();
+
+    			dispose = listen_dev(
+    				span,
+    				"click",
+    				function () {
+    					if (is_function(/*init_playlist*/ ctx[15](/*crumb*/ ctx[57]))) /*init_playlist*/ ctx[15](/*crumb*/ ctx[57]).apply(this, arguments);
+    				},
+    				false,
+    				false,
+    				false
+    			);
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+    			if (dirty[0] & /*path_to_music*/ 1 && t1_value !== (t1_value = filename(/*crumb*/ ctx[57]) + "")) set_data_dev(t1, t1_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(t0);
+    			if (detaching) detach_dev(span);
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block_2.name,
+    		type: "each",
+    		source: "(234:3) {#each breadcrumbs(path_to_music) as crumb }",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (250:4) {:else}
+    function create_else_block_1(ctx) {
+    	let div;
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			attr_dev(div, "class", "svelte-r849ua");
+    			add_location(div, file$1, 249, 11, 6597);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block_1.name,
+    		type: "else",
+    		source: "(250:4) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (246:4) {#each folders as folder,i }
+    function create_each_block_1(ctx) {
+    	let div;
+    	let i_1;
+    	let t0;
+    	let strong;
+    	let t1_value = filename(/*folder*/ ctx[55]) + "";
+    	let t1;
     	let div_id_value;
     	let dispose;
 
     	function click_handler(...args) {
-    		return /*click_handler*/ ctx[43](/*i*/ ctx[52], ...args);
+    		return /*click_handler*/ ctx[44](/*folder*/ ctx[55], ...args);
+    	}
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			i_1 = element("i");
+    			t0 = space();
+    			strong = element("strong");
+    			t1 = text(t1_value);
+    			attr_dev(i_1, "class", "fas fa-folder svelte-r849ua");
+    			add_location(i_1, file$1, 247, 6, 6506);
+    			attr_dev(strong, "class", "svelte-r849ua");
+    			add_location(strong, file$1, 247, 36, 6536);
+    			attr_dev(div, "class", "playlist_item bg-secondary svelte-r849ua");
+    			attr_dev(div, "id", div_id_value = "folder_" + /*i*/ ctx[54]);
+    			add_location(div, file$1, 246, 5, 6403);
+    		},
+    		m: function mount(target, anchor, remount) {
+    			insert_dev(target, div, anchor);
+    			append_dev(div, i_1);
+    			append_dev(div, t0);
+    			append_dev(div, strong);
+    			append_dev(strong, t1);
+    			if (remount) dispose();
+    			dispose = listen_dev(div, "click", click_handler, false, false, false);
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+    			if (dirty[0] & /*folders*/ 2048 && t1_value !== (t1_value = filename(/*folder*/ ctx[55]) + "")) set_data_dev(t1, t1_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block_1.name,
+    		type: "each",
+    		source: "(246:4) {#each folders as folder,i }",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (252:4) {#each sounds as sound, i }
+    function create_each_block(ctx) {
+    	let div;
+    	let t0_value = /*i*/ ctx[54] + 1 + "";
+    	let t0;
+    	let t1;
+    	let t2_value = /*sound*/ ctx[52] + "";
+    	let t2;
+    	let div_id_value;
+    	let dispose;
+
+    	function click_handler_1(...args) {
+    		return /*click_handler_1*/ ctx[45](/*i*/ ctx[54], ...args);
     	}
 
     	const block = {
@@ -702,10 +862,10 @@ var app = (function () {
     			t0 = text(t0_value);
     			t1 = text(". ");
     			t2 = text(t2_value);
-    			attr_dev(div, "class", "playlist_item svelte-zg0t9j");
-    			attr_dev(div, "id", div_id_value = "item_" + /*i*/ ctx[52]);
-    			toggle_class(div, "selected", /*current_sound_index*/ ctx[11] === /*i*/ ctx[52]);
-    			add_location(div, file$1, 214, 5, 5534);
+    			attr_dev(div, "class", "playlist_item svelte-r849ua");
+    			attr_dev(div, "id", div_id_value = "item_" + /*i*/ ctx[54]);
+    			toggle_class(div, "selected", /*current_sound_index*/ ctx[13] === /*i*/ ctx[54]);
+    			add_location(div, file$1, 252, 5, 6661);
     		},
     		m: function mount(target, anchor, remount) {
     			insert_dev(target, div, anchor);
@@ -713,14 +873,14 @@ var app = (function () {
     			append_dev(div, t1);
     			append_dev(div, t2);
     			if (remount) dispose();
-    			dispose = listen_dev(div, "click", click_handler, false, false, false);
+    			dispose = listen_dev(div, "click", click_handler_1, false, false, false);
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if (dirty[0] & /*sounds*/ 1024 && t2_value !== (t2_value = /*sound*/ ctx[50] + "")) set_data_dev(t2, t2_value);
+    			if (dirty[0] & /*sounds*/ 4096 && t2_value !== (t2_value = /*sound*/ ctx[52] + "")) set_data_dev(t2, t2_value);
 
-    			if (dirty[0] & /*current_sound_index*/ 2048) {
-    				toggle_class(div, "selected", /*current_sound_index*/ ctx[11] === /*i*/ ctx[52]);
+    			if (dirty[0] & /*current_sound_index*/ 8192) {
+    				toggle_class(div, "selected", /*current_sound_index*/ ctx[13] === /*i*/ ctx[54]);
     			}
     		},
     		d: function destroy(detaching) {
@@ -733,35 +893,35 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(214:4) {#each sounds as sound, i }",
+    		source: "(252:4) {#each sounds as sound, i }",
     		ctx
     	});
 
     	return block;
     }
 
-    // (228:2) {#if viz === true}
+    // (266:2) {#if viz === true}
     function create_if_block_1(ctx) {
     	let updating_audio_ctx;
     	let updating_media_source;
     	let current;
 
     	function visualizer_audio_ctx_binding(value) {
-    		/*visualizer_audio_ctx_binding*/ ctx[48].call(null, value);
+    		/*visualizer_audio_ctx_binding*/ ctx[50].call(null, value);
     	}
 
     	function visualizer_media_source_binding(value) {
-    		/*visualizer_media_source_binding*/ ctx[49].call(null, value);
+    		/*visualizer_media_source_binding*/ ctx[51].call(null, value);
     	}
 
     	let visualizer_props = {};
 
-    	if (/*audio_ctx*/ ctx[0] !== void 0) {
-    		visualizer_props.audio_ctx = /*audio_ctx*/ ctx[0];
+    	if (/*audio_ctx*/ ctx[1] !== void 0) {
+    		visualizer_props.audio_ctx = /*audio_ctx*/ ctx[1];
     	}
 
-    	if (/*media_source*/ ctx[1] !== void 0) {
-    		visualizer_props.media_source = /*media_source*/ ctx[1];
+    	if (/*media_source*/ ctx[2] !== void 0) {
+    		visualizer_props.media_source = /*media_source*/ ctx[2];
     	}
 
     	const visualizer = new Visualizer({ props: visualizer_props, $$inline: true });
@@ -779,15 +939,15 @@ var app = (function () {
     		p: function update(ctx, dirty) {
     			const visualizer_changes = {};
 
-    			if (!updating_audio_ctx && dirty[0] & /*audio_ctx*/ 1) {
+    			if (!updating_audio_ctx && dirty[0] & /*audio_ctx*/ 2) {
     				updating_audio_ctx = true;
-    				visualizer_changes.audio_ctx = /*audio_ctx*/ ctx[0];
+    				visualizer_changes.audio_ctx = /*audio_ctx*/ ctx[1];
     				add_flush_callback(() => updating_audio_ctx = false);
     			}
 
-    			if (!updating_media_source && dirty[0] & /*media_source*/ 2) {
+    			if (!updating_media_source && dirty[0] & /*media_source*/ 4) {
     				updating_media_source = true;
-    				visualizer_changes.media_source = /*media_source*/ ctx[1];
+    				visualizer_changes.media_source = /*media_source*/ ctx[2];
     				add_flush_callback(() => updating_media_source = false);
     			}
 
@@ -811,14 +971,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(228:2) {#if viz === true}",
+    		source: "(266:2) {#if viz === true}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (250:4) {:else}
+    // (288:4) {:else}
     function create_else_block(ctx) {
     	let span;
     	let i;
@@ -827,10 +987,10 @@ var app = (function () {
     		c: function create() {
     			span = element("span");
     			i = element("i");
-    			attr_dev(i, "class", "fas fa-pause svelte-zg0t9j");
-    			add_location(i, file$1, 250, 11, 6701);
-    			attr_dev(span, "class", "svelte-zg0t9j");
-    			add_location(span, file$1, 250, 5, 6695);
+    			attr_dev(i, "class", "fas fa-pause svelte-r849ua");
+    			add_location(i, file$1, 288, 11, 7832);
+    			attr_dev(span, "class", "svelte-r849ua");
+    			add_location(span, file$1, 288, 5, 7826);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -845,14 +1005,14 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(250:4) {:else}",
+    		source: "(288:4) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (248:4) {#if paused === true}
+    // (286:4) {#if paused === true}
     function create_if_block(ctx) {
     	let span;
     	let i;
@@ -861,10 +1021,10 @@ var app = (function () {
     		c: function create() {
     			span = element("span");
     			i = element("i");
-    			attr_dev(i, "class", "fas fa-play svelte-zg0t9j");
-    			add_location(i, file$1, 248, 11, 6641);
-    			attr_dev(span, "class", "svelte-zg0t9j");
-    			add_location(span, file$1, 248, 5, 6635);
+    			attr_dev(i, "class", "fas fa-play svelte-r849ua");
+    			add_location(i, file$1, 286, 11, 7772);
+    			attr_dev(span, "class", "svelte-r849ua");
+    			add_location(span, file$1, 286, 5, 7766);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -879,7 +1039,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(248:4) {#if paused === true}",
+    		source: "(286:4) {#if paused === true}",
     		ctx
     	});
 
@@ -887,61 +1047,90 @@ var app = (function () {
     }
 
     function create_fragment$1(ctx) {
-    	let div9;
-    	let div2;
+    	let div11;
     	let div1;
     	let div0;
+    	let span0;
+    	let i0;
     	let t0;
-    	let div8;
+    	let t1;
+    	let div4;
+    	let div3;
+    	let div2;
+    	let t2;
+    	let t3;
+    	let div10;
     	let audio_1;
     	let audio_1_is_paused = true;
     	let audio_1_updating = false;
     	let audio_1_animationframe;
-    	let t1;
-    	let t2;
-    	let div3;
-    	let span;
-    	let strong;
-    	let t3_value = format(/*time*/ ctx[2]) + "";
-    	let t3;
     	let t4;
-    	let t5_value = format(/*duration*/ ctx[3]) + "";
     	let t5;
+    	let div5;
+    	let span1;
+    	let strong;
+    	let t6_value = format(/*time*/ ctx[3]) + "";
     	let t6;
     	let t7;
+    	let t8_value = format(/*duration*/ ctx[4]) + "";
     	let t8;
-    	let div4;
+    	let t9;
+    	let t10;
+    	let t11;
+    	let div6;
     	let progress;
     	let progress_value_value;
-    	let t9;
-    	let div7;
-    	let div5;
-    	let button0;
-    	let i0;
-    	let t10;
-    	let button1;
-    	let t11;
-    	let button2;
-    	let i1;
     	let t12;
-    	let button3;
-    	let i2;
+    	let div9;
+    	let div7;
+    	let button0;
+    	let i1;
     	let t13;
-    	let div6;
-    	let button4;
-    	let i3;
+    	let button1;
     	let t14;
-    	let button5;
-    	let i4;
+    	let button2;
+    	let i2;
     	let t15;
-    	let button6;
-    	let i5;
+    	let button3;
+    	let i3;
     	let t16;
-    	let button7;
+    	let div8;
+    	let button4;
+    	let i4;
+    	let t17;
+    	let button5;
+    	let i5;
+    	let t18;
+    	let button6;
     	let i6;
+    	let t19;
+    	let button7;
+    	let i7;
     	let current;
     	let dispose;
-    	let each_value = /*sounds*/ ctx[10];
+    	let each_value_2 = breadcrumbs(/*path_to_music*/ ctx[0]);
+    	validate_each_argument(each_value_2);
+    	let each_blocks_2 = [];
+
+    	for (let i = 0; i < each_value_2.length; i += 1) {
+    		each_blocks_2[i] = create_each_block_2(get_each_context_2(ctx, each_value_2, i));
+    	}
+
+    	let each_value_1 = /*folders*/ ctx[11];
+    	validate_each_argument(each_value_1);
+    	let each_blocks_1 = [];
+
+    	for (let i = 0; i < each_value_1.length; i += 1) {
+    		each_blocks_1[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
+    	}
+
+    	let each1_else = null;
+
+    	if (!each_value_1.length) {
+    		each1_else = create_else_block_1(ctx);
+    	}
+
+    	let each_value = /*sounds*/ ctx[12];
     	validate_each_argument(each_value);
     	let each_blocks = [];
 
@@ -957,13 +1146,13 @@ var app = (function () {
     			audio_1_updating = true;
     		}
 
-    		/*audio_1_timeupdate_handler*/ ctx[47].call(audio_1);
+    		/*audio_1_timeupdate_handler*/ ctx[49].call(audio_1);
     	}
 
-    	let if_block0 = /*viz*/ ctx[9] === true && create_if_block_1(ctx);
+    	let if_block0 = /*viz*/ ctx[10] === true && create_if_block_1(ctx);
 
     	function select_block_type(ctx, dirty) {
-    		if (/*paused*/ ctx[4] === true) return create_if_block;
+    		if (/*paused*/ ctx[5] === true) return create_if_block;
     		return create_else_block;
     	}
 
@@ -972,223 +1161,332 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
-    			div9 = element("div");
-    			div2 = element("div");
+    			div11 = element("div");
     			div1 = element("div");
     			div0 = element("div");
+    			span0 = element("span");
+    			i0 = element("i");
+    			t0 = space();
+
+    			for (let i = 0; i < each_blocks_2.length; i += 1) {
+    				each_blocks_2[i].c();
+    			}
+
+    			t1 = space();
+    			div4 = element("div");
+    			div3 = element("div");
+    			div2 = element("div");
+
+    			for (let i = 0; i < each_blocks_1.length; i += 1) {
+    				each_blocks_1[i].c();
+    			}
+
+    			if (each1_else) {
+    				each1_else.c();
+    			}
+
+    			t2 = space();
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			t0 = space();
-    			div8 = element("div");
+    			t3 = space();
+    			div10 = element("div");
     			audio_1 = element("audio");
-    			t1 = space();
+    			t4 = space();
     			if (if_block0) if_block0.c();
-    			t2 = space();
-    			div3 = element("div");
-    			span = element("span");
-    			strong = element("strong");
-    			t3 = text(t3_value);
-    			t4 = text(" / ");
-    			t5 = text(t5_value);
-    			t6 = text(" | ");
-    			t7 = text(/*current_sound*/ ctx[12]);
-    			t8 = space();
-    			div4 = element("div");
-    			progress = element("progress");
-    			t9 = space();
-    			div7 = element("div");
+    			t5 = space();
     			div5 = element("div");
+    			span1 = element("span");
+    			strong = element("strong");
+    			t6 = text(t6_value);
+    			t7 = text(" / ");
+    			t8 = text(t8_value);
+    			t9 = text(" | ");
+    			t10 = text(/*current_sound*/ ctx[14]);
+    			t11 = space();
+    			div6 = element("div");
+    			progress = element("progress");
+    			t12 = space();
+    			div9 = element("div");
+    			div7 = element("div");
     			button0 = element("button");
-    			i0 = element("i");
-    			t10 = space();
+    			i1 = element("i");
+    			t13 = space();
     			button1 = element("button");
     			if_block1.c();
-    			t11 = space();
-    			button2 = element("button");
-    			i1 = element("i");
-    			t12 = space();
-    			button3 = element("button");
-    			i2 = element("i");
-    			t13 = space();
-    			div6 = element("div");
-    			button4 = element("button");
-    			i3 = element("i");
     			t14 = space();
-    			button5 = element("button");
-    			i4 = element("i");
+    			button2 = element("button");
+    			i2 = element("i");
     			t15 = space();
-    			button6 = element("button");
-    			i5 = element("i");
+    			button3 = element("button");
+    			i3 = element("i");
     			t16 = space();
-    			button7 = element("button");
+    			div8 = element("div");
+    			button4 = element("button");
+    			i4 = element("i");
+    			t17 = space();
+    			button5 = element("button");
+    			i5 = element("i");
+    			t18 = space();
+    			button6 = element("button");
     			i6 = element("i");
-    			attr_dev(div0, "class", "playlist_items  svelte-zg0t9j");
-    			add_location(div0, file$1, 212, 3, 5465);
-    			attr_dev(div1, "class", "playlist_items_wrapper bg-light text-dark svelte-zg0t9j");
-    			add_location(div1, file$1, 211, 2, 5405);
-    			attr_dev(div2, "class", "playlist bg-dark svelte-zg0t9j");
-    			add_location(div2, file$1, 210, 1, 5371);
+    			t19 = space();
+    			button7 = element("button");
+    			i7 = element("i");
+    			attr_dev(i0, "class", "fas fa-folder-open svelte-r849ua");
+    			add_location(i0, file$1, 232, 9, 5968);
+    			attr_dev(span0, "class", "svelte-r849ua");
+    			add_location(span0, file$1, 232, 3, 5962);
+    			attr_dev(div0, "class", "svelte-r849ua");
+    			add_location(div0, file$1, 231, 3, 5952);
+    			attr_dev(div1, "class", "breadcrumbs bg-dark text-light svelte-r849ua");
+    			add_location(div1, file$1, 230, 1, 5903);
+    			attr_dev(div2, "class", "playlist_items  svelte-r849ua");
+    			add_location(div2, file$1, 244, 3, 6333);
+    			attr_dev(div3, "class", "playlist_items_wrapper bg-light text-dark svelte-r849ua");
+    			add_location(div3, file$1, 243, 2, 6273);
+    			attr_dev(div4, "class", "playlist bg-dark svelte-r849ua");
+    			add_location(div4, file$1, 242, 1, 6239);
     			attr_dev(audio_1, "id", "audio");
-    			attr_dev(audio_1, "class", "svelte-zg0t9j");
-    			if (/*duration*/ ctx[3] === void 0) add_render_callback(() => /*audio_1_durationchange_handler*/ ctx[46].call(audio_1));
-    			add_location(audio_1, file$1, 220, 2, 5749);
-    			attr_dev(strong, "class", "svelte-zg0t9j");
-    			add_location(strong, file$1, 231, 22, 6024);
-    			attr_dev(span, "class", "time svelte-zg0t9j");
-    			add_location(span, file$1, 231, 3, 6005);
-    			attr_dev(div3, "class", "info text-light svelte-zg0t9j");
-    			add_location(div3, file$1, 230, 2, 5971);
-    			attr_dev(progress, "class", "bg-light svelte-zg0t9j");
-    			progress.value = progress_value_value = /*time*/ ctx[2] / /*duration*/ ctx[3] || 0;
-    			add_location(progress, file$1, 234, 3, 6142);
-    			attr_dev(div4, "class", "progress svelte-zg0t9j");
-    			add_location(div4, file$1, 233, 2, 6115);
-    			attr_dev(i0, "class", "fas fa-step-backward svelte-zg0t9j");
-    			add_location(i0, file$1, 244, 31, 6485);
+    			attr_dev(audio_1, "class", "svelte-r849ua");
+    			if (/*duration*/ ctx[4] === void 0) add_render_callback(() => /*audio_1_durationchange_handler*/ ctx[48].call(audio_1));
+    			add_location(audio_1, file$1, 258, 2, 6876);
+    			attr_dev(strong, "class", "svelte-r849ua");
+    			add_location(strong, file$1, 269, 22, 7151);
+    			attr_dev(span1, "class", "time svelte-r849ua");
+    			add_location(span1, file$1, 269, 3, 7132);
+    			attr_dev(div5, "class", "info text-light svelte-r849ua");
+    			add_location(div5, file$1, 268, 2, 7098);
+    			attr_dev(progress, "class", "bg-light svelte-r849ua");
+    			progress.value = progress_value_value = /*time*/ ctx[3] / /*duration*/ ctx[4] || 0;
+    			add_location(progress, file$1, 272, 3, 7269);
+    			attr_dev(div6, "class", "progress svelte-r849ua");
+    			add_location(div6, file$1, 271, 2, 7242);
+    			attr_dev(i1, "class", "fas fa-step-backward svelte-r849ua");
+    			add_location(i1, file$1, 282, 31, 7616);
     			attr_dev(button0, "title", "Previous track");
-    			attr_dev(button0, "class", "svelte-zg0t9j");
-    			add_location(button0, file$1, 243, 4, 6421);
+    			attr_dev(button0, "class", "svelte-r849ua");
+    			add_location(button0, file$1, 281, 4, 7552);
     			attr_dev(button1, "title", "Play / Pause");
-    			attr_dev(button1, "class", "svelte-zg0t9j");
-    			add_location(button1, file$1, 245, 4, 6537);
-    			attr_dev(i1, "class", "fas fa-stop svelte-zg0t9j");
-    			add_location(i1, file$1, 254, 21, 6812);
+    			attr_dev(button1, "class", "svelte-r849ua");
+    			add_location(button1, file$1, 283, 4, 7668);
+    			attr_dev(i2, "class", "fas fa-stop svelte-r849ua");
+    			add_location(i2, file$1, 292, 21, 7943);
     			attr_dev(button2, "title", "Stop");
-    			attr_dev(button2, "class", "svelte-zg0t9j");
-    			add_location(button2, file$1, 253, 4, 6769);
-    			attr_dev(i2, "class", "fas fa-step-forward svelte-zg0t9j");
-    			add_location(i2, file$1, 256, 27, 6910);
+    			attr_dev(button2, "class", "svelte-r849ua");
+    			add_location(button2, file$1, 291, 4, 7900);
+    			attr_dev(i3, "class", "fas fa-step-forward svelte-r849ua");
+    			add_location(i3, file$1, 294, 27, 8041);
     			attr_dev(button3, "title", "Next track");
-    			attr_dev(button3, "class", "svelte-zg0t9j");
-    			add_location(button3, file$1, 255, 4, 6855);
-    			attr_dev(div5, "class", "flexbox svelte-zg0t9j");
-    			add_location(div5, file$1, 242, 3, 6394);
-    			attr_dev(i3, "class", "fas fa-random svelte-zg0t9j");
-    			add_location(i3, file$1, 260, 58, 7088);
+    			attr_dev(button3, "class", "svelte-r849ua");
+    			add_location(button3, file$1, 293, 4, 7986);
+    			attr_dev(div7, "class", "flexbox svelte-r849ua");
+    			add_location(div7, file$1, 280, 3, 7525);
+    			attr_dev(i4, "class", "fas fa-random svelte-r849ua");
+    			add_location(i4, file$1, 298, 58, 8219);
     			attr_dev(button4, "title", "Toggle Shuffle");
-    			attr_dev(button4, "class", "svelte-zg0t9j");
-    			toggle_class(button4, "bg-primary", /*shuffle*/ ctx[8]);
-    			add_location(button4, file$1, 259, 4, 6998);
-    			attr_dev(i4, "class", "fas fa-redo svelte-zg0t9j");
-    			add_location(i4, file$1, 262, 52, 7220);
+    			attr_dev(button4, "class", "svelte-r849ua");
+    			toggle_class(button4, "bg-primary", /*shuffle*/ ctx[9]);
+    			add_location(button4, file$1, 297, 4, 8129);
+    			attr_dev(i5, "class", "fas fa-redo svelte-r849ua");
+    			add_location(i5, file$1, 300, 52, 8351);
     			attr_dev(button5, "title", "Toggle Track Loop");
-    			attr_dev(button5, "class", "svelte-zg0t9j");
-    			toggle_class(button5, "bg-primary", /*loop*/ ctx[7]);
-    			add_location(button5, file$1, 261, 4, 7133);
-    			attr_dev(i5, "class", "fas fa-volume-mute svelte-zg0t9j");
-    			add_location(i5, file$1, 263, 88, 7347);
+    			attr_dev(button5, "class", "svelte-r849ua");
+    			toggle_class(button5, "bg-primary", /*loop*/ ctx[8]);
+    			add_location(button5, file$1, 299, 4, 8264);
+    			attr_dev(i6, "class", "fas fa-volume-mute svelte-r849ua");
+    			add_location(i6, file$1, 301, 88, 8478);
     			attr_dev(button6, "title", "Mute / Unmute");
-    			attr_dev(button6, "class", "svelte-zg0t9j");
-    			toggle_class(button6, "bg-primary", /*mute*/ ctx[6]);
-    			add_location(button6, file$1, 263, 4, 7263);
-    			attr_dev(i6, "class", "fas fa-signal svelte-zg0t9j");
-    			add_location(i6, file$1, 265, 50, 7481);
+    			attr_dev(button6, "class", "svelte-r849ua");
+    			toggle_class(button6, "bg-primary", /*mute*/ ctx[7]);
+    			add_location(button6, file$1, 301, 4, 8394);
+    			attr_dev(i7, "class", "fas fa-signal svelte-r849ua");
+    			add_location(i7, file$1, 303, 50, 8612);
     			attr_dev(button7, "title", "Toggle Waveform");
-    			attr_dev(button7, "class", "svelte-zg0t9j");
-    			toggle_class(button7, "bg-primary", /*viz*/ ctx[9]);
-    			add_location(button7, file$1, 264, 4, 7397);
-    			attr_dev(div6, "class", "flexbox svelte-zg0t9j");
-    			add_location(div6, file$1, 258, 3, 6971);
-    			attr_dev(div7, "class", "controls svelte-zg0t9j");
-    			add_location(div7, file$1, 241, 2, 6367);
-    			attr_dev(div8, "class", "player bg-dark svelte-zg0t9j");
-    			add_location(div8, file$1, 219, 1, 5716);
-    			attr_dev(div9, "class", "container svelte-zg0t9j");
-    			add_location(div9, file$1, 209, 0, 5345);
+    			attr_dev(button7, "class", "svelte-r849ua");
+    			toggle_class(button7, "bg-primary", /*viz*/ ctx[10]);
+    			add_location(button7, file$1, 302, 4, 8528);
+    			attr_dev(div8, "class", "flexbox svelte-r849ua");
+    			add_location(div8, file$1, 296, 3, 8102);
+    			attr_dev(div9, "class", "controls svelte-r849ua");
+    			add_location(div9, file$1, 279, 2, 7498);
+    			attr_dev(div10, "class", "player bg-dark svelte-r849ua");
+    			add_location(div10, file$1, 257, 1, 6843);
+    			attr_dev(div11, "class", "container svelte-r849ua");
+    			add_location(div11, file$1, 229, 0, 5877);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor, remount) {
-    			insert_dev(target, div9, anchor);
-    			append_dev(div9, div2);
-    			append_dev(div2, div1);
+    			insert_dev(target, div11, anchor);
+    			append_dev(div11, div1);
     			append_dev(div1, div0);
+    			append_dev(div0, span0);
+    			append_dev(span0, i0);
+    			append_dev(div0, t0);
+
+    			for (let i = 0; i < each_blocks_2.length; i += 1) {
+    				each_blocks_2[i].m(div0, null);
+    			}
+
+    			append_dev(div11, t1);
+    			append_dev(div11, div4);
+    			append_dev(div4, div3);
+    			append_dev(div3, div2);
+
+    			for (let i = 0; i < each_blocks_1.length; i += 1) {
+    				each_blocks_1[i].m(div2, null);
+    			}
+
+    			if (each1_else) {
+    				each1_else.m(div2, null);
+    			}
+
+    			append_dev(div2, t2);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].m(div0, null);
+    				each_blocks[i].m(div2, null);
     			}
 
-    			append_dev(div9, t0);
-    			append_dev(div9, div8);
-    			append_dev(div8, audio_1);
+    			append_dev(div11, t3);
+    			append_dev(div11, div10);
+    			append_dev(div10, audio_1);
 
-    			if (!isNaN_1(/*volume*/ ctx[5])) {
-    				audio_1.volume = /*volume*/ ctx[5];
+    			if (!isNaN_1(/*volume*/ ctx[6])) {
+    				audio_1.volume = /*volume*/ ctx[6];
     			}
 
-    			append_dev(div8, t1);
-    			if (if_block0) if_block0.m(div8, null);
-    			append_dev(div8, t2);
-    			append_dev(div8, div3);
-    			append_dev(div3, span);
-    			append_dev(span, strong);
-    			append_dev(strong, t3);
-    			append_dev(strong, t4);
-    			append_dev(strong, t5);
-    			append_dev(span, t6);
-    			append_dev(div3, t7);
-    			append_dev(div8, t8);
-    			append_dev(div8, div4);
-    			append_dev(div4, progress);
-    			append_dev(div8, t9);
-    			append_dev(div8, div7);
-    			append_dev(div7, div5);
-    			append_dev(div5, button0);
-    			append_dev(button0, i0);
+    			append_dev(div10, t4);
+    			if (if_block0) if_block0.m(div10, null);
+    			append_dev(div10, t5);
+    			append_dev(div10, div5);
+    			append_dev(div5, span1);
+    			append_dev(span1, strong);
+    			append_dev(strong, t6);
+    			append_dev(strong, t7);
+    			append_dev(strong, t8);
+    			append_dev(span1, t9);
     			append_dev(div5, t10);
-    			append_dev(div5, button1);
-    			if_block1.m(button1, null);
-    			append_dev(div5, t11);
-    			append_dev(div5, button2);
-    			append_dev(button2, i1);
-    			append_dev(div5, t12);
-    			append_dev(div5, button3);
-    			append_dev(button3, i2);
+    			append_dev(div10, t11);
+    			append_dev(div10, div6);
+    			append_dev(div6, progress);
+    			append_dev(div10, t12);
+    			append_dev(div10, div9);
+    			append_dev(div9, div7);
+    			append_dev(div7, button0);
+    			append_dev(button0, i1);
     			append_dev(div7, t13);
-    			append_dev(div7, div6);
-    			append_dev(div6, button4);
-    			append_dev(button4, i3);
-    			append_dev(div6, t14);
-    			append_dev(div6, button5);
-    			append_dev(button5, i4);
-    			append_dev(div6, t15);
-    			append_dev(div6, button6);
-    			append_dev(button6, i5);
-    			append_dev(div6, t16);
-    			append_dev(div6, button7);
-    			append_dev(button7, i6);
+    			append_dev(div7, button1);
+    			if_block1.m(button1, null);
+    			append_dev(div7, t14);
+    			append_dev(div7, button2);
+    			append_dev(button2, i2);
+    			append_dev(div7, t15);
+    			append_dev(div7, button3);
+    			append_dev(button3, i3);
+    			append_dev(div9, t16);
+    			append_dev(div9, div8);
+    			append_dev(div8, button4);
+    			append_dev(button4, i4);
+    			append_dev(div8, t17);
+    			append_dev(div8, button5);
+    			append_dev(button5, i5);
+    			append_dev(div8, t18);
+    			append_dev(div8, button6);
+    			append_dev(button6, i6);
+    			append_dev(div8, t19);
+    			append_dev(div8, button7);
+    			append_dev(button7, i7);
     			current = true;
     			if (remount) run_all(dispose);
 
     			dispose = [
-    				listen_dev(window_1, "keydown", /*handleKeydown*/ ctx[23], false, false, false),
-    				listen_dev(audio_1, "ended", /*next_sound*/ ctx[16], false, false, false),
-    				listen_dev(audio_1, "play", /*audio_1_play_pause_handler*/ ctx[44]),
-    				listen_dev(audio_1, "pause", /*audio_1_play_pause_handler*/ ctx[44]),
-    				listen_dev(audio_1, "volumechange", /*audio_1_volumechange_handler*/ ctx[45]),
-    				listen_dev(audio_1, "durationchange", /*audio_1_durationchange_handler*/ ctx[46]),
+    				listen_dev(window_1, "keydown", /*handle_keydown*/ ctx[26], false, false, false),
+    				listen_dev(audio_1, "ended", /*next_sound*/ ctx[19], false, false, false),
+    				listen_dev(audio_1, "play", /*audio_1_play_pause_handler*/ ctx[46]),
+    				listen_dev(audio_1, "pause", /*audio_1_play_pause_handler*/ ctx[46]),
+    				listen_dev(audio_1, "volumechange", /*audio_1_volumechange_handler*/ ctx[47]),
+    				listen_dev(audio_1, "durationchange", /*audio_1_durationchange_handler*/ ctx[48]),
     				listen_dev(audio_1, "timeupdate", audio_1_timeupdate_handler),
-    				listen_dev(progress, "mousemove", /*handleMousemove*/ ctx[21], false, false, false),
-    				listen_dev(progress, "touchstart", /*handleTouchmove*/ ctx[22], false, false, false),
-    				listen_dev(progress, "touchmove", /*handleTouchmove*/ ctx[22], false, false, false),
-    				listen_dev(progress, "touchend", /*handleTouchmove*/ ctx[22], false, false, false),
-    				listen_dev(button0, "click", /*previous_sound*/ ctx[15], false, false, false),
-    				listen_dev(button1, "click", /*toggle_play_pause*/ ctx[13], false, false, false),
-    				listen_dev(button2, "click", /*stop*/ ctx[14], false, false, false),
-    				listen_dev(button3, "click", /*next_sound*/ ctx[16], false, false, false),
-    				listen_dev(button4, "click", /*toggle_shuffle*/ ctx[17], false, false, false),
-    				listen_dev(button5, "click", /*toggle_loop*/ ctx[18], false, false, false),
-    				listen_dev(button6, "click", /*toggle_volume_mute*/ ctx[19], false, false, false),
-    				listen_dev(button7, "click", /*toggle_viz*/ ctx[20], false, false, false)
+    				listen_dev(progress, "mousemove", /*handle_mousemove*/ ctx[24], false, false, false),
+    				listen_dev(progress, "touchstart", /*handle_touchmove*/ ctx[25], false, false, false),
+    				listen_dev(progress, "touchmove", /*handle_touchmove*/ ctx[25], false, false, false),
+    				listen_dev(progress, "touchend", /*handle_touchmove*/ ctx[25], false, false, false),
+    				listen_dev(button0, "click", /*previous_sound*/ ctx[18], false, false, false),
+    				listen_dev(button1, "click", /*toggle_play_pause*/ ctx[16], false, false, false),
+    				listen_dev(button2, "click", /*stop*/ ctx[17], false, false, false),
+    				listen_dev(button3, "click", /*next_sound*/ ctx[19], false, false, false),
+    				listen_dev(button4, "click", /*toggle_shuffle*/ ctx[20], false, false, false),
+    				listen_dev(button5, "click", /*toggle_loop*/ ctx[21], false, false, false),
+    				listen_dev(button6, "click", /*toggle_volume_mute*/ ctx[22], false, false, false),
+    				listen_dev(button7, "click", /*toggle_viz*/ ctx[23], false, false, false)
     			];
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty[0] & /*current_sound_index, play_sound, sounds*/ 16780288) {
-    				each_value = /*sounds*/ ctx[10];
+    			if (dirty[0] & /*init_playlist, path_to_music*/ 32769) {
+    				each_value_2 = breadcrumbs(/*path_to_music*/ ctx[0]);
+    				validate_each_argument(each_value_2);
+    				let i;
+
+    				for (i = 0; i < each_value_2.length; i += 1) {
+    					const child_ctx = get_each_context_2(ctx, each_value_2, i);
+
+    					if (each_blocks_2[i]) {
+    						each_blocks_2[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks_2[i] = create_each_block_2(child_ctx);
+    						each_blocks_2[i].c();
+    						each_blocks_2[i].m(div0, null);
+    					}
+    				}
+
+    				for (; i < each_blocks_2.length; i += 1) {
+    					each_blocks_2[i].d(1);
+    				}
+
+    				each_blocks_2.length = each_value_2.length;
+    			}
+
+    			if (dirty[0] & /*init_playlist, folders*/ 34816) {
+    				each_value_1 = /*folders*/ ctx[11];
+    				validate_each_argument(each_value_1);
+    				let i;
+
+    				for (i = 0; i < each_value_1.length; i += 1) {
+    					const child_ctx = get_each_context_1(ctx, each_value_1, i);
+
+    					if (each_blocks_1[i]) {
+    						each_blocks_1[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks_1[i] = create_each_block_1(child_ctx);
+    						each_blocks_1[i].c();
+    						each_blocks_1[i].m(div2, t2);
+    					}
+    				}
+
+    				for (; i < each_blocks_1.length; i += 1) {
+    					each_blocks_1[i].d(1);
+    				}
+
+    				each_blocks_1.length = each_value_1.length;
+
+    				if (each_value_1.length) {
+    					if (each1_else) {
+    						each1_else.d(1);
+    						each1_else = null;
+    					}
+    				} else if (!each1_else) {
+    					each1_else = create_else_block_1(ctx);
+    					each1_else.c();
+    					each1_else.m(div2, t2);
+    				}
+    			}
+
+    			if (dirty[0] & /*current_sound_index, play_sound, sounds*/ 134230016) {
+    				each_value = /*sounds*/ ctx[12];
     				validate_each_argument(each_value);
     				let i;
 
@@ -1200,7 +1498,7 @@ var app = (function () {
     					} else {
     						each_blocks[i] = create_each_block(child_ctx);
     						each_blocks[i].c();
-    						each_blocks[i].m(div0, null);
+    						each_blocks[i].m(div2, null);
     					}
     				}
 
@@ -1211,21 +1509,21 @@ var app = (function () {
     				each_blocks.length = each_value.length;
     			}
 
-    			if (dirty[0] & /*paused*/ 16 && audio_1_is_paused !== (audio_1_is_paused = /*paused*/ ctx[4])) {
+    			if (dirty[0] & /*paused*/ 32 && audio_1_is_paused !== (audio_1_is_paused = /*paused*/ ctx[5])) {
     				audio_1[audio_1_is_paused ? "pause" : "play"]();
     			}
 
-    			if (dirty[0] & /*volume*/ 32 && !isNaN_1(/*volume*/ ctx[5])) {
-    				audio_1.volume = /*volume*/ ctx[5];
+    			if (dirty[0] & /*volume*/ 64 && !isNaN_1(/*volume*/ ctx[6])) {
+    				audio_1.volume = /*volume*/ ctx[6];
     			}
 
-    			if (!audio_1_updating && dirty[0] & /*time*/ 4 && !isNaN_1(/*time*/ ctx[2])) {
-    				audio_1.currentTime = /*time*/ ctx[2];
+    			if (!audio_1_updating && dirty[0] & /*time*/ 8 && !isNaN_1(/*time*/ ctx[3])) {
+    				audio_1.currentTime = /*time*/ ctx[3];
     			}
 
     			audio_1_updating = false;
 
-    			if (/*viz*/ ctx[9] === true) {
+    			if (/*viz*/ ctx[10] === true) {
     				if (if_block0) {
     					if_block0.p(ctx, dirty);
     					transition_in(if_block0, 1);
@@ -1233,7 +1531,7 @@ var app = (function () {
     					if_block0 = create_if_block_1(ctx);
     					if_block0.c();
     					transition_in(if_block0, 1);
-    					if_block0.m(div8, t2);
+    					if_block0.m(div10, t5);
     				}
     			} else if (if_block0) {
     				group_outros();
@@ -1245,11 +1543,11 @@ var app = (function () {
     				check_outros();
     			}
 
-    			if ((!current || dirty[0] & /*time*/ 4) && t3_value !== (t3_value = format(/*time*/ ctx[2]) + "")) set_data_dev(t3, t3_value);
-    			if ((!current || dirty[0] & /*duration*/ 8) && t5_value !== (t5_value = format(/*duration*/ ctx[3]) + "")) set_data_dev(t5, t5_value);
-    			if (!current || dirty[0] & /*current_sound*/ 4096) set_data_dev(t7, /*current_sound*/ ctx[12]);
+    			if ((!current || dirty[0] & /*time*/ 8) && t6_value !== (t6_value = format(/*time*/ ctx[3]) + "")) set_data_dev(t6, t6_value);
+    			if ((!current || dirty[0] & /*duration*/ 16) && t8_value !== (t8_value = format(/*duration*/ ctx[4]) + "")) set_data_dev(t8, t8_value);
+    			if (!current || dirty[0] & /*current_sound*/ 16384) set_data_dev(t10, /*current_sound*/ ctx[14]);
 
-    			if (!current || dirty[0] & /*time, duration*/ 12 && progress_value_value !== (progress_value_value = /*time*/ ctx[2] / /*duration*/ ctx[3] || 0)) {
+    			if (!current || dirty[0] & /*time, duration*/ 24 && progress_value_value !== (progress_value_value = /*time*/ ctx[3] / /*duration*/ ctx[4] || 0)) {
     				prop_dev(progress, "value", progress_value_value);
     			}
 
@@ -1263,20 +1561,20 @@ var app = (function () {
     				}
     			}
 
-    			if (dirty[0] & /*shuffle*/ 256) {
-    				toggle_class(button4, "bg-primary", /*shuffle*/ ctx[8]);
+    			if (dirty[0] & /*shuffle*/ 512) {
+    				toggle_class(button4, "bg-primary", /*shuffle*/ ctx[9]);
     			}
 
-    			if (dirty[0] & /*loop*/ 128) {
-    				toggle_class(button5, "bg-primary", /*loop*/ ctx[7]);
+    			if (dirty[0] & /*loop*/ 256) {
+    				toggle_class(button5, "bg-primary", /*loop*/ ctx[8]);
     			}
 
-    			if (dirty[0] & /*mute*/ 64) {
-    				toggle_class(button6, "bg-primary", /*mute*/ ctx[6]);
+    			if (dirty[0] & /*mute*/ 128) {
+    				toggle_class(button6, "bg-primary", /*mute*/ ctx[7]);
     			}
 
-    			if (dirty[0] & /*viz*/ 512) {
-    				toggle_class(button7, "bg-primary", /*viz*/ ctx[9]);
+    			if (dirty[0] & /*viz*/ 1024) {
+    				toggle_class(button7, "bg-primary", /*viz*/ ctx[10]);
     			}
     		},
     		i: function intro(local) {
@@ -1289,7 +1587,10 @@ var app = (function () {
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div9);
+    			if (detaching) detach_dev(div11);
+    			destroy_each(each_blocks_2, detaching);
+    			destroy_each(each_blocks_1, detaching);
+    			if (each1_else) each1_else.d();
     			destroy_each(each_blocks, detaching);
     			if (if_block0) if_block0.d();
     			if_block1.d();
@@ -1319,6 +1620,27 @@ var app = (function () {
     	return `${minutes}:${seconds}`;
     }
 
+    function filename(path) {
+    	return path.replace(/^.*[\\\/]/, "");
+    }
+
+    function breadcrumbs(path) {
+    	if (path == null) return [];
+    	let splits = path.split("/");
+    	let crumbs = [];
+    	let temp_path = "";
+    	let i = 0;
+
+    	for (const split of splits) {
+    		let temp = i === 0 ? split : temp_path + "/" + split;
+    		crumbs.push(temp);
+    		temp_path = temp;
+    		i = i + 1;
+    	}
+
+    	return crumbs;
+    }
+
     function instance$1($$self, $$props, $$invalidate) {
     	let { path_to_music = "sounds" } = $$props;
     	let audio;
@@ -1333,6 +1655,7 @@ var app = (function () {
     	let loop = false;
     	let shuffle = false;
     	let viz = false;
+    	let folders = [];
     	let sounds = [];
     	let current_sound_index = 0;
     	let key;
@@ -1344,7 +1667,7 @@ var app = (function () {
     	let touch_target;
 
     	onMount(() => {
-    		init_playlist();
+    		init_playlist(path_to_music);
     	});
 
     	function init_audio_context() {
@@ -1353,14 +1676,17 @@ var app = (function () {
     			
     		};
 
-    		$$invalidate(0, audio_ctx = new (window.AudioContext || window.webkitAudioContext)(options));
-    		$$invalidate(1, media_source = audio_ctx.createMediaElementSource(audio));
+    		$$invalidate(1, audio_ctx = new (window.AudioContext || window.webkitAudioContext)(options));
+    		$$invalidate(2, media_source = audio_ctx.createMediaElementSource(audio));
     		media_source.connect(audio_ctx.destination);
     	}
 
-    	function init_playlist() {
+    	function init_playlist(path) {
+    		$$invalidate(0, path_to_music = path);
+
     		fetch(path_to_music + "/" + playlist_file_name + "?v=" + Math.random()).then(resp => resp.json()).then(function (response) {
-    			$$invalidate(10, sounds = response.songs);
+    			$$invalidate(11, folders = response.folders != null ? response.folders : []);
+    			$$invalidate(12, sounds = response.songs);
 
     			if (sounds[current_sound_index] != null) {
     				audio = document.getElementById("audio");
@@ -1372,7 +1698,7 @@ var app = (function () {
     	}
 
     	function toggle_play_pause() {
-    		$$invalidate(4, paused = !paused);
+    		$$invalidate(5, paused = !paused);
     	}
 
     	function stop() {
@@ -1381,7 +1707,7 @@ var app = (function () {
     	}
 
     	function previous_sound() {
-    		$$invalidate(11, current_sound_index = current_sound_index === 0
+    		$$invalidate(13, current_sound_index = current_sound_index === 0
     		? sounds.length - 1
     		: current_sound_index - 1);
 
@@ -1390,67 +1716,69 @@ var app = (function () {
     	}
 
     	function next_sound() {
-    		if (loop === false) $$invalidate(11, current_sound_index = (current_sound_index + 1) % sounds.length);
-    		if (shuffle === true) $$invalidate(11, current_sound_index = Math.floor(Math.random() * sounds.length));
+    		if (loop === false) $$invalidate(13, current_sound_index = (current_sound_index + 1) % sounds.length);
+    		if (shuffle === true) $$invalidate(13, current_sound_index = Math.floor(Math.random() * sounds.length));
     		play_sound(current_sound_index);
     		scroll_to_sound();
     	}
 
     	function backward() {
-    		if (audio.currentTime - step < 0) audio.currentTime = 0; else audio.currentTime -= step;
+    		audio.currentTime = audio.currentTime - step < 0
+    		? 0
+    		: audio.currentTime - step;
     	}
 
     	function forward() {
     		if (audio.currentTime + step < audio.duration) audio.currentTime += step;
     	}
 
+    	function volume_up() {
+    		if (volume + 0.1 <= 1) $$invalidate(6, volume += 0.1);
+    	}
+
+    	function volume_down() {
+    		if (volume - 0.1 >= 0) $$invalidate(6, volume -= 0.1);
+    	}
+
     	function toggle_shuffle() {
-    		$$invalidate(8, shuffle = !shuffle);
+    		$$invalidate(9, shuffle = !shuffle);
     	}
 
     	function toggle_loop() {
-    		$$invalidate(7, loop = !loop);
+    		$$invalidate(8, loop = !loop);
     	}
 
     	function toggle_volume_mute() {
     		if (mute === false) {
     			volume_save = volume;
-    			$$invalidate(5, volume = 0);
+    			$$invalidate(6, volume = 0);
     		} else {
-    			$$invalidate(5, volume = volume_save);
+    			$$invalidate(6, volume = volume_save);
     		}
 
-    		$$invalidate(6, mute = !mute);
+    		$$invalidate(7, mute = !mute);
     	}
 
     	function toggle_viz() {
     		if (!audio_ctx) init_audio_context();
-    		$$invalidate(9, viz = !viz);
+    		$$invalidate(10, viz = !viz);
     	}
 
-    	function volume_up() {
-    		if (volume + 0.1 <= 1) $$invalidate(5, volume += 0.1);
-    	}
-
-    	function volume_down() {
-    		if (volume - 0.1 >= 0) $$invalidate(5, volume -= 0.1);
-    	}
-
-    	function handleMousemove(e) {
+    	function handle_mousemove(e) {
     		if (!(e.buttons & 1)) return; // mouse not down
     		if (!duration) return; // video not loaded yet
     		const { left, right } = this.getBoundingClientRect();
-    		$$invalidate(2, time = duration * (e.clientX - left) / (right - left));
+    		$$invalidate(3, time = duration * (e.clientX - left) / (right - left));
     	}
 
-    	function handleTouchmove(e) {
+    	function handle_touchmove(e) {
     		if (e.changedTouches.length > 0) {
-    			let theTouch = e.changedTouches[0];
-    			touch_screenX = theTouch.screenX;
-    			touch_screenY = theTouch.screenY;
-    			touch_clientX = theTouch.clientX;
-    			touch_clientY = theTouch.clientY;
-    			touch_target = theTouch.target;
+    			let touch = e.changedTouches[0];
+    			touch_screenX = touch.screenX;
+    			touch_screenY = touch.screenY;
+    			touch_clientX = touch.clientX;
+    			touch_clientY = touch.clientY;
+    			touch_target = touch.target;
     		}
 
     		let mouseEv;
@@ -1483,7 +1811,7 @@ var app = (function () {
     		e.preventDefault();
     	}
 
-    	function handleKeydown(event) {
+    	function handle_keydown(event) {
     		key_code = event.keyCode;
     		key = event.key;
 
@@ -1491,11 +1819,8 @@ var app = (function () {
     			case "x":
     				toggle_play_pause();
     				break;
-    			case "ArrowRight":
-    				forward();
-    				break;
-    			case "ArrowLeft":
-    				backward();
+    			case "c":
+    				stop();
     				break;
     			case "b":
     				previous_sound();
@@ -1515,11 +1840,17 @@ var app = (function () {
     			case "v":
     				toggle_viz();
     				break;
+    			case "ArrowRight":
+    				forward();
+    				break;
+    			case "ArrowLeft":
+    				backward();
+    				break;
     		}
     	}
 
     	function play_sound(sound_index) {
-    		$$invalidate(11, current_sound_index = sound_index);
+    		$$invalidate(13, current_sound_index = sound_index);
     		audio.src = path_to_music + "/" + sounds[current_sound_index];
     		audio.play();
     	}
@@ -1537,40 +1868,41 @@ var app = (function () {
 
     	let { $$slots = {}, $$scope } = $$props;
     	validate_slots("Sonbi1", $$slots, []);
-    	const click_handler = i => play_sound(i);
+    	const click_handler = folder => init_playlist(folder);
+    	const click_handler_1 = i => play_sound(i);
 
     	function audio_1_play_pause_handler() {
     		paused = this.paused;
-    		$$invalidate(4, paused);
+    		$$invalidate(5, paused);
     	}
 
     	function audio_1_volumechange_handler() {
     		volume = this.volume;
-    		$$invalidate(5, volume);
+    		$$invalidate(6, volume);
     	}
 
     	function audio_1_durationchange_handler() {
     		duration = this.duration;
-    		$$invalidate(3, duration);
+    		$$invalidate(4, duration);
     	}
 
     	function audio_1_timeupdate_handler() {
     		time = this.currentTime;
-    		$$invalidate(2, time);
+    		$$invalidate(3, time);
     	}
 
     	function visualizer_audio_ctx_binding(value) {
     		audio_ctx = value;
-    		$$invalidate(0, audio_ctx);
+    		$$invalidate(1, audio_ctx);
     	}
 
     	function visualizer_media_source_binding(value) {
     		media_source = value;
-    		$$invalidate(1, media_source);
+    		$$invalidate(2, media_source);
     	}
 
     	$$self.$set = $$props => {
-    		if ("path_to_music" in $$props) $$invalidate(25, path_to_music = $$props.path_to_music);
+    		if ("path_to_music" in $$props) $$invalidate(0, path_to_music = $$props.path_to_music);
     	};
 
     	$$self.$capture_state = () => ({
@@ -1591,6 +1923,7 @@ var app = (function () {
     		loop,
     		shuffle,
     		viz,
+    		folders,
     		sounds,
     		current_sound_index,
     		key,
@@ -1608,38 +1941,41 @@ var app = (function () {
     		next_sound,
     		backward,
     		forward,
+    		volume_up,
+    		volume_down,
     		toggle_shuffle,
     		toggle_loop,
     		toggle_volume_mute,
     		toggle_viz,
-    		volume_up,
-    		volume_down,
     		format,
-    		handleMousemove,
-    		handleTouchmove,
-    		handleKeydown,
+    		handle_mousemove,
+    		handle_touchmove,
+    		handle_keydown,
     		play_sound,
     		scroll_to_sound,
+    		filename,
+    		breadcrumbs,
     		current_sound,
     		current_sound_src
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("path_to_music" in $$props) $$invalidate(25, path_to_music = $$props.path_to_music);
+    		if ("path_to_music" in $$props) $$invalidate(0, path_to_music = $$props.path_to_music);
     		if ("audio" in $$props) audio = $$props.audio;
-    		if ("audio_ctx" in $$props) $$invalidate(0, audio_ctx = $$props.audio_ctx);
-    		if ("media_source" in $$props) $$invalidate(1, media_source = $$props.media_source);
-    		if ("time" in $$props) $$invalidate(2, time = $$props.time);
-    		if ("duration" in $$props) $$invalidate(3, duration = $$props.duration);
-    		if ("paused" in $$props) $$invalidate(4, paused = $$props.paused);
-    		if ("volume" in $$props) $$invalidate(5, volume = $$props.volume);
+    		if ("audio_ctx" in $$props) $$invalidate(1, audio_ctx = $$props.audio_ctx);
+    		if ("media_source" in $$props) $$invalidate(2, media_source = $$props.media_source);
+    		if ("time" in $$props) $$invalidate(3, time = $$props.time);
+    		if ("duration" in $$props) $$invalidate(4, duration = $$props.duration);
+    		if ("paused" in $$props) $$invalidate(5, paused = $$props.paused);
+    		if ("volume" in $$props) $$invalidate(6, volume = $$props.volume);
     		if ("volume_save" in $$props) volume_save = $$props.volume_save;
-    		if ("mute" in $$props) $$invalidate(6, mute = $$props.mute);
-    		if ("loop" in $$props) $$invalidate(7, loop = $$props.loop);
-    		if ("shuffle" in $$props) $$invalidate(8, shuffle = $$props.shuffle);
-    		if ("viz" in $$props) $$invalidate(9, viz = $$props.viz);
-    		if ("sounds" in $$props) $$invalidate(10, sounds = $$props.sounds);
-    		if ("current_sound_index" in $$props) $$invalidate(11, current_sound_index = $$props.current_sound_index);
+    		if ("mute" in $$props) $$invalidate(7, mute = $$props.mute);
+    		if ("loop" in $$props) $$invalidate(8, loop = $$props.loop);
+    		if ("shuffle" in $$props) $$invalidate(9, shuffle = $$props.shuffle);
+    		if ("viz" in $$props) $$invalidate(10, viz = $$props.viz);
+    		if ("folders" in $$props) $$invalidate(11, folders = $$props.folders);
+    		if ("sounds" in $$props) $$invalidate(12, sounds = $$props.sounds);
+    		if ("current_sound_index" in $$props) $$invalidate(13, current_sound_index = $$props.current_sound_index);
     		if ("key" in $$props) key = $$props.key;
     		if ("key_code" in $$props) key_code = $$props.key_code;
     		if ("touch_screenX" in $$props) touch_screenX = $$props.touch_screenX;
@@ -1647,7 +1983,7 @@ var app = (function () {
     		if ("touch_clientX" in $$props) touch_clientX = $$props.touch_clientX;
     		if ("touch_clientY" in $$props) touch_clientY = $$props.touch_clientY;
     		if ("touch_target" in $$props) touch_target = $$props.touch_target;
-    		if ("current_sound" in $$props) $$invalidate(12, current_sound = $$props.current_sound);
+    		if ("current_sound" in $$props) $$invalidate(14, current_sound = $$props.current_sound);
     		if ("current_sound_src" in $$props) current_sound_src = $$props.current_sound_src;
     	};
 
@@ -1659,13 +1995,13 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty[0] & /*sounds, current_sound_index*/ 3072) {
-    			 $$invalidate(12, current_sound = sounds != null && sounds[current_sound_index] != null
+    		if ($$self.$$.dirty[0] & /*sounds, current_sound_index*/ 12288) {
+    			 $$invalidate(14, current_sound = sounds != null && sounds[current_sound_index] != null
     			? sounds[current_sound_index]
     			: "");
     		}
 
-    		if ($$self.$$.dirty[0] & /*sounds, current_sound_index, path_to_music*/ 33557504) {
+    		if ($$self.$$.dirty[0] & /*sounds, current_sound_index, path_to_music*/ 12289) {
     			 current_sound_src = sounds != null && sounds[current_sound_index] != null
     			? path_to_music + "/" + sounds[current_sound_index]
     			: "";
@@ -1673,6 +2009,7 @@ var app = (function () {
     	};
 
     	return [
+    		path_to_music,
     		audio_ctx,
     		media_source,
     		time,
@@ -1683,9 +2020,11 @@ var app = (function () {
     		loop,
     		shuffle,
     		viz,
+    		folders,
     		sounds,
     		current_sound_index,
     		current_sound,
+    		init_playlist,
     		toggle_play_pause,
     		stop,
     		previous_sound,
@@ -1694,11 +2033,10 @@ var app = (function () {
     		toggle_loop,
     		toggle_volume_mute,
     		toggle_viz,
-    		handleMousemove,
-    		handleTouchmove,
-    		handleKeydown,
+    		handle_mousemove,
+    		handle_touchmove,
+    		handle_keydown,
     		play_sound,
-    		path_to_music,
     		audio,
     		volume_save,
     		key,
@@ -1710,13 +2048,13 @@ var app = (function () {
     		touch_target,
     		current_sound_src,
     		init_audio_context,
-    		init_playlist,
     		backward,
     		forward,
     		volume_up,
     		volume_down,
     		scroll_to_sound,
     		click_handler,
+    		click_handler_1,
     		audio_1_play_pause_handler,
     		audio_1_volumechange_handler,
     		audio_1_durationchange_handler,
@@ -1729,7 +2067,7 @@ var app = (function () {
     class Sonbi1 extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { path_to_music: 25 }, [-1, -1]);
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { path_to_music: 0 }, [-1, -1]);
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
