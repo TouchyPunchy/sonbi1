@@ -78,7 +78,6 @@
 		let bufferLength = analyser.frequencyBinCount;
 		let dataArray = new Uint8Array(bufferLength);
 		ctx.clearRect(0, 0, w, h);
-
 		function draw() {
 			draw_visual = requestAnimationFrame(draw);
 			analyser.getByteFrequencyData(dataArray);
@@ -98,7 +97,8 @@
 	}
 </script>
 
-<canvas bind:this={canvas} on:click={draw_viz}></canvas>
+<canvas bind:this={canvas} 
+	on:click={draw_viz}></canvas>
 
 <style>
 	canvas{

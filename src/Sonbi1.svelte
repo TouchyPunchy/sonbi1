@@ -5,6 +5,7 @@
 	import Visualizer from './Visualizer.svelte';
 
 	export let path_to_music = 'sounds';
+
 	const playlist_file_name = 'playlist.json';
 	const step = 5; 
 
@@ -25,6 +26,12 @@
 	let sounds = [];
 	let current_sound_index = 0;
 
+	let touch_screenX;
+	let touch_screenY;
+	let touch_clientX;
+	let touch_clientY;
+	let touch_target;
+	
 	let key;
 	let key_code;
 
@@ -34,12 +41,6 @@
 	$: current_sound_src = (sounds != null && sounds[current_sound_index] != null) 
 		? path_to_music + '/' + sounds[current_sound_index] 
 		: '';
-
-	let touch_screenX;
-	let touch_screenY;
-	let touch_clientX;
-	let touch_clientY;
-	let touch_target;
 
 	onMount(() => {
 		init_playlist(path_to_music);
@@ -217,9 +218,8 @@
 		let temp_path = '';
 		let i = 0;
 		for(const split of splits){
-			let temp = (i === 0) ? split : temp_path + '/' + split;
-			crumbs.push(temp);
-			temp_path = temp;
+			temp_path = (i === 0) ? split : temp_path + '/' + split;
+			crumbs.push(temp_path);
 			i = i + 1;
 		}
 		return crumbs;
@@ -229,28 +229,31 @@
 <svelte:window on:keydown={handle_keydown}/>
 <div class="container">
 	<div class="breadcrumbs bg-dark text-light">
-			<div>
-			<span><i class='fas fa-folder-open'></i></span>
-			{#each breadcrumbs(path_to_music) as crumb} 
-				/ 
-				<span class="breadcrumb pointer text-primary-hover" 
-					on:click={init_playlist(crumb)}>
-					{filename(crumb)}
-				</span>
-			{/each}
-			</div>
-		</div>
+		<span><i class='fas fa-folder-open'></i></span>
+		{#each breadcrumbs(path_to_music) as crumb} 
+		/ 
+		<span class="breadcrumb pointer text-primary-hover" 
+			on:click={init_playlist(crumb)}>
+			{filename(crumb)}
+		</span>
+		{/each}
+	</div>
 	<div class="playlist bg-dark">
 		<div class="playlist_items_wrapper bg-light text-dark">
 			<div class="playlist_items">
-				{#each folders as folder,i}
-					<div class="playlist_item text-light bg-secondary" id="folder_{i}" on:click={() => init_playlist(folder)}>
-						<i class='fas fa-folder'></i> {filename(folder)}
-					</div>
-				{:else}<div></div>
+				{#each folders as folder}
+				<div class="playlist_item text-light bg-secondary" 
+					on:click={init_playlist(folder)}>
+					<i class='fas fa-folder'></i> {filename(folder)}
+				</div>
 				{/each}
 				{#each sounds as sound,i}
-					<div class="playlist_item" id="item_{i}" class:selected={ current_sound_index === i} on:click={() => play_sound(i)}>{i+1}. {sound}</div>
+				<div class="playlist_item" 
+					id="item_{i}"
+					class:selected={current_sound_index === i} 
+					on:click={() => play_sound(i)}>
+					{i+1}. {sound}
+				</div>
 				{/each}
 			</div>
 		</div>
@@ -336,19 +339,7 @@
 	progress::-webkit-progress-value { background-color: var(--primary-color); }
 	.text-primary-hover:hover{ color: var(--primary-color); }
 
-	/* ---- Player ---- */
-	button{
-		font-family: inherit;
-		font-size: 1.5rem;
-		height: 3.5rem;
-		cursor: pointer;
-		border-radius: 0;
-		outline:none;				
-	}
-	button::-moz-focus-inner {
-		border: 0;
-		padding: 1rem;
-	}
+	/* ---- Container ---- */
 	.container{
 		display: grid;
 		height: 100vh;
@@ -356,14 +347,42 @@
 		box-sizing: border-box;
 		grid-template-rows: auto 1fr auto;
 	}
+
+	/* ---- Breadcrumbs ---- */
+	.breadcrumbs{ padding: 1rem 0 0 1rem; }
+
+	/* ---- Playlist ---- */
+	.playlist{
+		overflow: hidden;
+		padding: 1rem;
+	}
+	.playlist_items_wrapper{
+		height: 100%;
+		max-height: 100%;
+		overflow-y: scroll;
+		scrollbar-width: none;
+	}
+	.playlist_items_wrapper::-webkit-scrollbar{ display: none; }
+	.playlist_items{
+		max-height: 100%;
+		min-width: 0;
+	}
+	.playlist_item{
+		cursor: pointer;
+		padding: 0.75rem;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
+	}
+
+	/* ---- Player ---- */
 	.player{
 		padding: 0 1rem 1rem 1rem ;
 		/* Required for text-overflow to do anything */
 		min-width: 0;
 	}
 	.info{
-		padding-top: 0.5rem;
-		padding-bottom : 1.5rem;
+		padding-bottom : 1rem;
 		text-overflow: ellipsis;
 		/* Required for text-overflow to do anything */
 		white-space: nowrap;
@@ -384,31 +403,17 @@
 		margin: 0.25rem; 
 	}
 
-	/* ---- Breadcrumbs ---- */
-	.breadcrumbs{ padding: 0.75rem 0 0 1rem; }
-
-	/* ---- Playlist ---- */
-	.playlist{
-		overflow: hidden;
-		padding: 0.75rem 1rem;
-	}
-	.playlist_items_wrapper{
-		height: 100%;
-		max-height: 100%;
-		overflow-y: scroll;
-		scrollbar-width: none;
-	}
-	.playlist_items_wrapper::-webkit-scrollbar{ display: none; }
-	.playlist_items{
-		max-height: 100%;
-		min-width: 0;
-	}
-	.playlist_item{
+	button{
+		font-family: inherit;
+		font-size: 1.5rem;
+		height: 3.5rem;
 		cursor: pointer;
-		padding: 0.75rem;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		overflow: hidden;
+		border-radius: 0;
+		outline: none;				
+	}
+	button::-moz-focus-inner {
+		border: 0;
+		padding: 1rem;
 	}
 
 	@media (max-width: 640px) {
