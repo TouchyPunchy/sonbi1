@@ -102,7 +102,7 @@
 
 <style>
 	canvas{
-		margin-bottom: 0.5em;
+		margin-bottom: 0.5rem;
 		width: 100%;
 		height: 6em;
 	}

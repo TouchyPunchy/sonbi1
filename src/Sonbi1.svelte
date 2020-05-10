@@ -51,7 +51,7 @@
 	}
 
 	function init_playlist(){
-		fetch(path_to_music + '/' + playlist_file_name)
+		fetch(path_to_music + '/' + playlist_file_name +'?v='+Math.random())
 		.then((resp) => resp.json())
 		.then(function(response){
 			sounds = response.songs;
@@ -177,7 +177,7 @@
 <div class="container">
 	<div class="playlist bg-dark">
 		<div class="playlist_items_wrapper bg-light text-dark">
-			<div class="playlist_items">
+			<div class="playlist_items ">
 				{#each sounds as sound, i }
 					<div class="playlist_item" id="item_{i}" class:selected={ current_sound_index === i} on:click={() => play_sound(i)}>{i+1}. {sound}</div>
 				{/each}
@@ -248,7 +248,10 @@
 	.bg-primary, .selected{ background-color: var(--primary-color); }
 	.bg-dark{ background-color: var(--dark-color); }
 	.bg-light{ background-color: var(--light-color); }
-
+	.bg-gradient{ 
+		background: rgb(255,153,0);
+		background: linear-gradient(177deg, rgba(255,153,0,1) 0%, rgba(0,212,255,1) 100%);
+	}
 	button{
 		background-color: var(--dark-color);
 		color: var(--light-color);
@@ -258,43 +261,43 @@
 
 	button{
 		font-family: inherit;
-		font-size: inherit;
-		height: 3.5em;
+		font-size: 1.5rem;
+		height: 3.5rem;
 		cursor: pointer;
 		border-radius: 0;
 		outline:none;				
 	}
 	button::-moz-focus-inner {
 		border: 0;
-		padding: 1em;
+		padding: 1rem;
 	}
 	.container{
 		display: grid;
 		height: 100vh;
-		padding: 0.5em 1em 1em 1em;
+		padding: 1rem;
 		box-sizing: border-box;
 		grid-template-rows: [row1-start] 1fr [row1-end] auto [last-line];
 	}
 	/* ---- Player ---- */
 	.player{
-		padding: 0em 1em 1em 1em ;
+		padding: 0 1rem 1rem 1rem ;
 		/* Required for text-overflow to do anything */
 		min-width: 0;
 	}
 	.info{
-		padding-top: 1em;
-		padding-bottom : 2em;
+		padding-top: 1rem;
+		padding-bottom : 2rem;
 		text-overflow: ellipsis;
 		/* Required for text-overflow to do anything */
 		white-space: nowrap;
 		overflow: hidden;
 	}
-	.progress{ padding-bottom : 2em; }
+	.progress{ padding-bottom : 2rem; }
 	progress {
 		border: 0;
 		display: block;
 		width: 100%;
-		height: 1em;
+		height: 1rem;
 		-webkit-appearance: none;
 		appearance: none;
 	}
@@ -308,13 +311,14 @@
 	/* ---- Playlist ---- */
 	.playlist{
 		overflow: hidden;
-		padding: 1em;
+		padding: 1rem;
 	}
 	.playlist_items_wrapper{
 		height: 100%;
 		max-height: 100%;
 		overflow-y: scroll;
 		scrollbar-width: none;
+		
 	}
 	.playlist_items_wrapper::-webkit-scrollbar{ display: none; }
 	.playlist_items{
@@ -323,7 +327,7 @@
 	}
 	.playlist_item{
 		cursor: pointer;
-		padding: 0.5em;
+		padding: 0.5rem;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 		overflow: hidden;
