@@ -231,10 +231,10 @@
 	<div class="breadcrumbs bg-dark text-light">
 			<div>
 			<span><i class='fas fa-folder-open'></i></span>
-			{#each breadcrumbs(path_to_music) as crumb } 
+			{#each breadcrumbs(path_to_music) as crumb} 
 				/ 
 				<span class="breadcrumb pointer text-primary-hover" 
-					on:click={ init_playlist(crumb) }>
+					on:click={init_playlist(crumb)}>
 					{filename(crumb)}
 				</span>
 			{/each}
@@ -242,14 +242,14 @@
 		</div>
 	<div class="playlist bg-dark">
 		<div class="playlist_items_wrapper bg-light text-dark">
-			<div class="playlist_items ">
-				{#each folders as folder,i }
-					<div class="playlist_item bg-secondary" id="folder_{i}" on:click={() => init_playlist(folder)}>
-						<i class='fas fa-folder'></i> <strong>{filename(folder)}</strong>
+			<div class="playlist_items">
+				{#each folders as folder,i}
+					<div class="playlist_item text-light bg-secondary" id="folder_{i}" on:click={() => init_playlist(folder)}>
+						<i class='fas fa-folder'></i> {filename(folder)}
 					</div>
 				{:else}<div></div>
 				{/each}
-				{#each sounds as sound, i }
+				{#each sounds as sound,i}
 					<div class="playlist_item" id="item_{i}" class:selected={ current_sound_index === i} on:click={() => play_sound(i)}>{i+1}. {sound}</div>
 				{/each}
 			</div>
@@ -264,7 +264,7 @@
 			bind:currentTime={time}
 			></audio>
 		{#if viz === true}
-		<Visualizer bind:audio_ctx bind:media_source/>
+		<Visualizer bind:audio_ctx bind:media_source />
 		{/if}
 		<div class="info text-light">
 			<span class="time"><strong>{format(time)} / {format(duration)}</strong> | </span>{current_sound}
@@ -316,7 +316,7 @@
 		--light-color: white;
 		--dark-color: #2b2b2b;
 		--primary-color: #ff9900;
-		--secondary-color: grey;
+		--secondary-color: #393939;
 	}
 	.text-light{ color: var(--light-color); }
 	.text-dark{ color: var(--dark-color); }
@@ -385,7 +385,6 @@
 	}
 
 	/* ---- Breadcrumbs ---- */
-
 	.breadcrumbs{ padding: 0.75rem 0 0 1rem; }
 
 	/* ---- Playlist ---- */
@@ -406,7 +405,7 @@
 	}
 	.playlist_item{
 		cursor: pointer;
-		padding: 0.5rem;
+		padding: 0.75rem;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 		overflow: hidden;
