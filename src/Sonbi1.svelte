@@ -6,12 +6,13 @@
 
 	export let path_to_music = 'sounds';
 	const playlist_file_name = 'playlist.json';
+	const step = 5; 
 
 	let audio;
 	let audio_ctx;
 	let media_source;
 	let time = 0;
-	let duration;
+	let duration; 
 	let paused = true;
 	let volume = 0.5;
 	let volume_save = volume;
@@ -21,8 +22,11 @@
 	let viz = false;
 
 	let sounds = [];
-
 	let current_sound_index = 0;
+
+	let key;
+	let key_code;
+
 	$: current_sound = (sounds != null && sounds[current_sound_index] != null) 
 		? sounds[current_sound_index] 
 		: '';
@@ -45,7 +49,6 @@
 			sampleRate: 44100 // defaut sampleRate : 48000 vs 44100 for mp3
 		}; 
 		audio_ctx = new (window.AudioContext || window.webkitAudioContext)(options);
-		// console.log(audio_ctx.sampleRate);
 		media_source = audio_ctx.createMediaElementSource(audio);
 		media_source.connect(audio_ctx.destination);
 	}
@@ -85,6 +88,18 @@
 		if(shuffle === true) current_sound_index = Math.floor(Math.random() * sounds.length);
 		play_sound(current_sound_index);
 		scroll_to_sound();
+	}
+
+	function backward(){
+		if(audio.currentTime - step < 0)
+			audio.currentTime = 0;
+		else
+			audio.currentTime -= step;
+	}
+	  
+	function forward(){
+		if(audio.currentTime + step < audio.duration)
+			audio.currentTime += step;
 	}
 
 	function toggle_shuffle(){
@@ -162,6 +177,23 @@
 		e.preventDefault();
 	}
 
+	function handleKeydown(event) {
+		key_code = event.keyCode;
+		key = event.key;
+		switch(key){
+			case 'x': toggle_play_pause(); break;
+			case 'ArrowRight': forward(); break;
+			case 'ArrowLeft': backward(); break;
+			case 'b': previous_sound(); break;
+			case 'n': next_sound(); break;
+			case 's': toggle_shuffle(); break;
+			case 'l': toggle_loop(); break;
+			case 'm': toggle_mute(); break;
+			case 'v': toggle_viz(); break;
+			default: break;
+		}
+	}
+
 	function play_sound(sound_index){
 		current_sound_index = sound_index;
 		audio.src = path_to_music + '/' + sounds[current_sound_index];
@@ -174,6 +206,7 @@
 	}
 </script>
 
+<svelte:window on:keydown={handleKeydown}/>
 <div class="container">
 	<div class="playlist bg-dark">
 		<div class="playlist_items_wrapper bg-light text-dark">
