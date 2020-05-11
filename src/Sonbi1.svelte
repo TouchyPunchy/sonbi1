@@ -22,6 +22,12 @@
 	let shuffle = false;
 	let viz = false;
 
+	let progress_indicator;
+	let progress_indicator_value = 0;
+	let progress_indicator_visible = false;
+	let progress_indicator_top = 0;
+	let progress_indicator_left = 0;
+
 	let folders = [];
 	let sounds = [];
 	let current_sound_index = 0;
@@ -141,11 +147,23 @@
 		return `${minutes}:${seconds}`;
 	}
 	
+	function handle_mouseout(e){
+		progress_indicator_visible = false;
+	}
+
 	function handle_mousemove(e) {
-		if (!(e.buttons & 1)) return; // mouse not down
 		if (!duration) return; // audio not loaded yet
-		const { left, right } = this.getBoundingClientRect();
-		time = duration * (e.clientX - left) / (right - left);
+		const { width } = progress_indicator.getBoundingClientRect();
+		const { left, right, top } = this.getBoundingClientRect();
+		progress_indicator_top = 'calc('+ top +'px - 2.575rem)';
+		progress_indicator_left = e.clientX - width / 2;
+		progress_indicator_value = duration * (e.clientX - left) / (right - left);
+		// mouse button not down
+		progress_indicator_visible = true;
+		if (!(e.buttons & 1)){
+			return; 
+		}
+		time = progress_indicator_value;
 	}
 
 	function handle_touchmove(e) {
@@ -160,7 +178,7 @@
 		let mouseEv;
 		switch(e.type) {
 			case 'touchstart': mouseEv = 'mousedown'; break;  
-			case 'touchend': mouseEv = 'mouseup'; break;
+			case 'touchend': mouseEv = 'mouseup'; progress_indicator_visible = false; break;
 			case 'touchmove':  mouseEv = 'mousemove'; break;
 			default: return;
 		}
@@ -190,6 +208,8 @@
 			case 'v': toggle_viz(); break;
 			case 'ArrowRight': forward(); break;
 			case 'ArrowLeft': backward(); break;
+			case 'ArrowUp': volume_up(); break;
+			case 'ArrowDown': volume_down(); break;
 			default: break;
 		}
 	}
@@ -225,6 +245,12 @@
 </script>
 
 <svelte:window on:keydown={handle_keydown}/>
+<div bind:this={progress_indicator} 
+	class="progress_indicator"
+	class:hidden={progress_indicator_visible === false}
+	style="top: {progress_indicator_top}; left:{progress_indicator_left}px">
+	<strong>{format(progress_indicator_value)}</strong>
+</div>
 <div class="container">
 	<div class="breadcrumbs bg-dark text-light">
 		<span><i class='fas fa-folder-open'></i></span>
@@ -276,7 +302,8 @@
 				on:mousemove={handle_mousemove}
 				on:touchstart={handle_touchmove}
 				on:touchmove={handle_touchmove} 
-				on:touchend={handle_touchmove}/>
+				on:touchend={handle_touchmove}
+				on:mouseout={handle_mouseout} />
 		</div>
 		<div class="controls">
 			<div class="flexbox">
@@ -296,16 +323,16 @@
 					on:click={next_sound}><i class='fas fa-step-forward'></i></button> 
 			</div>
 			<div class="flexbox">
-				<button title="Toggle Shuffle"
+				<button title="Shuffle"
 					class:bg-primary={shuffle} 
 					on:click={toggle_shuffle}><i class='fas fa-random'></i></button> 
-				<button title="Toggle Track Loop"
+				<button title="Loop track"
 					class:bg-primary={loop} 
 					on:click={toggle_loop}><i class='fas fa-redo'></i></button> 
 				<button title="Mute / Unmute" 
 					class:bg-primary={mute} 
 					on:click={toggle_volume_mute}><i class='fas fa-volume-mute'></i></button> 
-				<button title="Toggle Waveform" 
+				<button title="Visualization" 
 					class:bg-primary={viz} 
 					on:click={toggle_viz}><i class='fas fa-signal'></i></button> 
 			</div>
@@ -313,12 +340,14 @@
 	</div>  
 </div>
 <style>
+	.hidden { visibility: hidden; }
 	/* ---- Colors / Pointers ---- */
 	:root{
 		--light-color: white;
 		--dark-color: #2b2b2b;
 		--primary-color: #ff9900;
 		--secondary-color: #393939;
+		--dark-color-transparent: #2b2b2bcc; 
 	}
 	.text-light{ color: var(--light-color); }
 	.text-dark{ color: var(--dark-color); }
@@ -396,6 +425,16 @@
 		height: 1rem;
 		-webkit-appearance: none;
 		appearance: none;
+	}
+	.progress_indicator{
+		position: absolute;
+		padding: 0.25rem;
+		color: var(--dark-color);
+		background-color: var(--primary-color);
+		/* border: 1px solid#ff9900; */
+		/* color: var(--light-color);
+		background-color: var(--dark-color-transparent);
+		border: 1px solid#ff9900; */
 	}
 	.flexbox{ display:flex; }
 	.flexbox button{ 
