@@ -158,11 +158,8 @@
 		progress_indicator_top = 'calc('+ top +'px - 2.575rem)';
 		progress_indicator_left = e.clientX - width / 2;
 		progress_indicator_value = duration * (e.clientX - left) / (right - left);
-		// mouse button not down
 		progress_indicator_visible = true;
-		if (!(e.buttons & 1)){
-			return; 
-		}
+		if (!(e.buttons & 1)) return; // mouse button not down
 		time = progress_indicator_value;
 	}
 
@@ -431,10 +428,6 @@
 		padding: 0.25rem;
 		color: var(--dark-color);
 		background-color: var(--primary-color);
-		/* border: 1px solid#ff9900; */
-		/* color: var(--light-color);
-		background-color: var(--dark-color-transparent);
-		border: 1px solid#ff9900; */
 	}
 	.flexbox{ display:flex; }
 	.flexbox button{ 
