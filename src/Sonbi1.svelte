@@ -2,7 +2,10 @@
 	import '@fortawesome/fontawesome-free/js/fontawesome.min.js';
 	import '@fortawesome/fontawesome-free/js/solid.min.js';
 	import { onMount } from 'svelte';
+	import { quintOut } from 'svelte/easing';
 	import Visualizer from './Visualizer.svelte';
+	import KeyBindings from './KeyBindings.svelte';
+	import About from './About.svelte';
 
 	export let path_to_music = 'sounds';
 
@@ -29,8 +32,8 @@
 	let progress_indicator_left = 0;
 
 	let folders = [];
-	let sounds = [];
-	let current_sound_index = 0;
+	let tracks = [];
+	let track_index = 0;
 
 	let touch_screenX;
 	let touch_screenY;
@@ -41,15 +44,23 @@
 	let key;
 	let key_code;
 
-	$: current_sound = (sounds != null && sounds[current_sound_index] != null) 
-		? sounds[current_sound_index] 
+	let menu = false;
+	let show_keybindings = false;
+	let show_about = false;
+	let deferred_prompt;
+	let show_install_button = false;
+
+	$: current_sound = (tracks != null && tracks[track_index] != null) 
+		? tracks[track_index] 
 		: '';
-	$: current_sound_src = (sounds != null && sounds[current_sound_index] != null) 
-		? path_to_music + '/' + sounds[current_sound_index] 
+	$: current_sound_src = (tracks != null && tracks[track_index] != null) 
+		? path_to_music + '/' + tracks[track_index] 
 		: '';
 
 	onMount(() => {
 		init_playlist(path_to_music);
+		init_mediasession();
+		init_service_worker();
 	});
 
 	function init_audio_context(){
@@ -67,15 +78,50 @@
 		.then((resp) => resp.json())
 		.then(function(response){
 			folders = (response.folders != null) ? response.folders : [];
-			sounds = response.songs;
-			if(sounds[current_sound_index] != null){
+			tracks = response.songs;
+			if(tracks[track_index] != null){
 				audio = document.getElementById('audio');
-				audio.src = path_to_music + '/' + sounds[current_sound_index];
+				audio.src = path_to_music + '/' + tracks[track_index];
 			}
 		})
 		.catch((error)=> {
 			console.error('Error: no ['+ playlist_file_name +'] file found in path_to_music ['+ path_to_music +']')
 		});
+	}
+
+	function init_mediasession(){
+		if('mediaSession' in navigator){
+			navigator.mediaSession.setActionHandler('play',  function() { paused = false; })
+			navigator.mediaSession.setActionHandler('pause', function() { paused = true; });
+			navigator.mediaSession.setActionHandler('seekbackward', function() { backward(); });
+			navigator.mediaSession.setActionHandler('seekforward', function() { forward(); });
+			navigator.mediaSession.setActionHandler('previoustrack', function() { previous_track(); });
+			navigator.mediaSession.setActionHandler('nexttrack', function() { next_track(); });
+		}
+	}
+
+	function init_service_worker(){
+		if('serviceWorker' in navigator){
+			navigator.serviceWorker
+			.register('service_worker.js')
+			.then(function(reg){
+				//console.log('Service worker successfully registered');
+			}).catch(function(err){
+				console.log('Error registering service worker : ' + err);
+			});
+		}
+	}
+
+	function set_metadata(title){
+		if('mediaSession' in navigator){
+			let artwork_path = window.location.href + encodeURI(path_to_music) + '/cover.png';
+			navigator.mediaSession.metadata = new MediaMetadata({
+				title: title,
+				artist: "Label Carrote",
+				//album: "Podcast Name",
+				artwork: [{ src: artwork_path }]
+			});
+		}
 	}
 
 	function toggle_play_pause(){
@@ -87,16 +133,16 @@
 		audio.currentTime = 0;
 	}
 
-	function previous_sound(){
-		current_sound_index = (current_sound_index === 0 ) ? sounds.length - 1 : current_sound_index - 1 ;
-		play_sound(current_sound_index);
+	function previous_track(){
+		track_index = (track_index === 0 ) ? tracks.length - 1 : track_index - 1 ;
+		play_sound(track_index);
 		scroll_to_sound();
 	}
 
-	function next_sound(){
-		if(loop === false) current_sound_index = (current_sound_index + 1) % sounds.length;
-		if(shuffle === true) current_sound_index = Math.floor(Math.random() * sounds.length);
-		play_sound(current_sound_index);
+	function next_track(){
+		if(loop === false) track_index = (track_index + 1) % tracks.length;
+		if(shuffle === true) track_index = Math.floor(Math.random() * tracks.length);
+		play_sound(track_index);
 		scroll_to_sound();
 	}
 
@@ -136,7 +182,19 @@
 
 	function toggle_viz(){
 		if(!audio_ctx) init_audio_context();
-		viz = ! viz;
+		viz = !viz;
+	}
+
+	function toggle_menu(e){
+		e.stopPropagation();
+		menu = !menu;
+	}
+
+	function toggle_keybindings(){
+		show_keybindings = !show_keybindings;
+	}
+	function toggle_about(){
+		show_about = !show_about;
 	}
 
 	function format(seconds) {
@@ -145,6 +203,13 @@
 		seconds = Math.floor(seconds % 60);
 		if (seconds < 10) seconds = '0' + seconds;
 		return `${minutes}:${seconds}`;
+	}
+
+	function handle_close(event){
+		switch(event.detail.page){
+			case 'keybindings' : toggle_keybindings(); break;
+			case 'about' : toggle_about(); break;
+		}
 	}
 	
 	function handle_mouseout(e){
@@ -197,8 +262,8 @@
 		switch(key){
 			case 'x': toggle_play_pause(); break;
 			case 'c': stop(); break;
-			case 'b': previous_sound(); break;
-			case 'n': next_sound(); break;
+			case 'b': previous_track(); break;
+			case 'n': next_track(); break;
 			case 's': toggle_shuffle(); break;
 			case 'l': toggle_loop(); break;
 			case 'm': toggle_mute(); break;
@@ -212,13 +277,42 @@
 	}
 
 	function play_sound(sound_index){
-		current_sound_index = sound_index;
-		audio.src = path_to_music + '/' + sounds[current_sound_index];
-		audio.play();
+		track_index = sound_index;
+		audio.src = path_to_music + '/' + tracks[track_index];
+		audio.play()
+		.then(_ => { set_metadata(tracks[track_index]); });
 	}
 
+	// ---- PWA ----
+	
+	function save_install_prompt(event){
+		console.log('save_install_prompt');
+		console.log(event);
+		event.preventDefault();
+		show_install_button = true;
+		deferred_prompt = event;
+	}
+
+	function show_install_prompt(){
+		if(deferred_prompt != null){
+			show_install_button = false;
+			deferred_prompt.prompt();
+			deferred_prompt.userChoice
+			.then((choice) => {
+				console.log(
+					(choice.outcome === 'accepted') 
+					? 'User accepted installation' 
+					: 'User dismissed installation'
+				);
+				deferred_prompt = null;
+			});
+		}
+	}
+
+	// ---- Helpers ----
+
 	function scroll_to_sound(){
-		let elt = document.getElementById('item_' + current_sound_index);
+		let elt = document.getElementById('item_' + track_index);
 		elt.scrollIntoView({behavior: "smooth"});
 	}
 
@@ -239,9 +333,30 @@
 		}
 		return crumbs;
 	}
+	function handle_click(e){
+		// close menu
+		menu = false;
+	}
+
+	function scale_from_angle(node, { duration }) {
+		return {
+			duration,
+			css: t => {
+				const quint = quintOut(t);
+				return `
+					transform-origin: top right;
+					transform: scale(${quint});
+					`;
+			}
+		};
+	}
 </script>
 
-<svelte:window on:keydown={handle_keydown}/>
+<svelte:window 
+	on:keydown={handle_keydown}
+	on:click={handle_click}
+	on:beforeinstallprompt={save_install_prompt}/>
+
 <div bind:this={progress_indicator} 
 	class="progress_indicator"
 	class:hidden={progress_indicator_visible === false}
@@ -249,92 +364,127 @@
 	<strong>{format(progress_indicator_value)}</strong>
 </div>
 <div class="container">
-	<div class="breadcrumbs bg-dark text-light">
-		<span><i class='fas fa-folder-open'></i></span>
-		{#each breadcrumbs(path_to_music) as crumb} 
-		/ 
-		<span class="breadcrumb pointer text-primary-hover" 
-			on:click={init_playlist(crumb)}>
-			{filename(crumb)}
-		</span>
-		{/each}
-	</div>
-	<div class="playlist bg-dark">
-		<div class="playlist_items_wrapper bg-light text-dark">
-			<div class="playlist_items">
-				{#each folders as folder}
-				<div class="playlist_item text-light bg-secondary" 
-					on:click={init_playlist(folder)}>
-					<i class='fas fa-folder'></i> {filename(folder)}
+	{#if show_keybindings === true}
+	<KeyBindings on:close={handle_close}/>
+	{/if}
+	{#if show_about === true}
+	<About on:close={handle_close}/>
+	{/if}
+	<div class="grid">	
+		{#if menu}
+			<div class="menu pointer" 
+				in:scale_from_angle="{{duration: 200}}"
+				out:scale_from_angle="{{duration: 200}}"
+				on:click={e => e.stopPropagation()}>
+				<div class="menu-item">Color Themes</div>
+				<div class="menu-item"
+					on:click={toggle_keybindings}>
+					Key Bindings
 				</div>
-				{/each}
-				{#each sounds as sound,i}
-				<div class="playlist_item" 
-					id="item_{i}"
-					class:selected={current_sound_index === i} 
-					on:click={() => play_sound(i)}>
-					{i+1}. {sound}
+				{#if show_install_button === true}
+				<div class="menu-item"
+					on:click={show_install_prompt}>
+					Install App
 				</div>
-				{/each}
-			</div>
-		</div>
-	</div>
-	<div class="player bg-dark"> 
-		<audio id="audio"
-			on:ended={next_sound}
-			bind:paused 
-			bind:volume 
-			bind:duration
-			bind:currentTime={time}
-			></audio>
-		{#if viz === true}
-		<Visualizer bind:audio_ctx bind:media_source />
-		{/if}
-		<div class="info text-light">
-			<span class="time"><strong>{format(time)} / {format(duration)}</strong> | </span>{current_sound}
-		</div>
-		<div class="progress">
-			<progress class="bg-light"
-				value="{(time / duration) || 0}"
-				on:mousemove={handle_mousemove}
-				on:touchstart={handle_touchmove}
-				on:touchmove={handle_touchmove} 
-				on:touchend={handle_touchmove}
-				on:mouseout={handle_mouseout} />
-		</div>
-		<div class="controls">
-			<div class="flexbox">
-				<button title="Previous track" 
-					on:click={previous_sound}><i class='fas fa-step-backward'></i></button> 
-				<button title="Play / Pause"
-					on:click={toggle_play_pause}>
-				{#if paused === true}
-					<span><i class='fas fa-play'></i></span>
-				{:else}
-					<span><i class='fas fa-pause'></i></span>
 				{/if}
-				</button> 
-				<button title="Stop"
-					on:click={stop}><i class='fas fa-stop'></i></button> 
-				<button title="Next track"
-					on:click={next_sound}><i class='fas fa-step-forward'></i></button> 
+				<div class="menu-item"
+					on:click={toggle_about}>
+					About
+				</div>
 			</div>
-			<div class="flexbox">
-				<button title="Shuffle"
-					class:bg-primary={shuffle} 
-					on:click={toggle_shuffle}><i class='fas fa-random'></i></button> 
-				<button title="Loop track"
-					class:bg-primary={loop} 
-					on:click={toggle_loop}><i class='fas fa-redo'></i></button> 
-				<button title="Mute / Unmute" 
-					class:bg-primary={mute} 
-					on:click={toggle_volume_mute}><i class='fas fa-volume-mute'></i></button> 
-				<button title="Visualization" 
-					class:bg-primary={viz} 
-					on:click={toggle_viz}><i class='fas fa-signal'></i></button> 
+		{/if}
+		<div class="header bg-dark text-light">
+			<div class="breadcrumbs">
+				<span><i class='fas fa-folder-open'></i></span>
+				{#each breadcrumbs(path_to_music) as crumb} 
+				/ 
+				<span class="breadcrumb pointer text-primary-hover" 
+					on:click={init_playlist(crumb)}>
+					{filename(crumb)}
+				</span>
+				{/each}
+			</div>
+			<button class="pointer" on:click={e => toggle_menu(e)}>
+				<i class="fas fa-ellipsis-v"></i>
+			</button>
+		</div>
+		<div class="playlist bg-dark">
+			<div class="playlist_items_wrapper bg-light text-dark">
+				<div class="playlist_items">
+					{#each folders as folder}
+					<div class="playlist_item text-light bg-secondary" 
+						on:click={init_playlist(folder)}>
+						<i class='fas fa-folder'></i> {filename(folder)}
+					</div>
+					{/each}
+					{#each tracks as track,i}
+					<div class="playlist_item" 
+						id="item_{i}"
+						class:selected={track_index === i} 
+						on:click={() => play_sound(i)}>
+						{i+1}. {track}
+					</div>
+					{/each}
+				</div>
 			</div>
 		</div>
-	</div>  
+		<div class="player bg-dark"> 
+			<audio id="audio"
+				on:ended={next_track}
+				bind:paused 
+				bind:volume 
+				bind:duration
+				bind:currentTime={time}
+				></audio>
+			{#if viz === true}
+			<Visualizer bind:audio_ctx bind:media_source />
+			{/if}
+			<div class="info text-light">
+				<span class="time"><strong>{format(time)} / {format(duration)}</strong> | </span>{current_sound}
+			</div>
+			<div class="progress">
+				<progress class="bg-light"
+					value="{(time / duration) || 0}"
+					on:mousemove={handle_mousemove}
+					on:touchstart={handle_touchmove}
+					on:touchmove={handle_touchmove} 
+					on:touchend={handle_touchmove}
+					on:mouseout={handle_mouseout} />
+			</div>
+			<div class="controls">
+				<div class="flexbox">
+					<button title="Previous track" 
+						on:click={previous_track}><i class='fas fa-step-backward'></i></button> 
+					<button title="Play / Pause"
+						on:click={toggle_play_pause}>
+					{#if paused === true}
+						<span><i class='fas fa-play'></i></span>
+					{:else}
+						<span><i class='fas fa-pause'></i></span>
+					{/if}
+					</button> 
+					<button title="Stop"
+						on:click={stop}><i class='fas fa-stop'></i></button> 
+					<button title="Next track"
+						on:click={next_track}><i class='fas fa-step-forward'></i></button> 
+				</div>
+				<div class="flexbox">
+					<button title="Shuffle"
+						class:bg-primary={shuffle} 
+						on:click={toggle_shuffle}><i class='fas fa-random'></i></button> 
+					<button title="Loop track"
+						class:bg-primary={loop} 
+						on:click={toggle_loop}><i class='fas fa-redo'></i></button> 
+					<button title="Mute / Unmute" 
+						class:bg-primary={mute} 
+						on:click={toggle_volume_mute}><i class='fas fa-volume-mute'></i></button> 
+					<button title="Visualization" 
+						class:bg-primary={viz} 
+						on:click={toggle_viz}><i class='fas fa-signal'></i></button> 
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 <style>
 	.hidden { visibility: hidden; }
@@ -352,12 +502,14 @@
 	.bg-secondary{ background-color: var(--secondary-color); }
 	.bg-dark{ background-color: var(--dark-color); }
 	.bg-light{ background-color: var(--light-color); }
+	a{ color: var(--primary-color); }
 	button{
 		background-color: var(--dark-color);
 		color: var(--light-color);
 		border: var(--dark-color) 1px solid;
 	}
-	button:focus{ border: var(--primary-color) 1px solid; }
+	button:focus{ outline: none; }
+	.player button:focus{ border: var(--primary-color) 1px solid; }
 	progress::-webkit-progress-bar { background-color: var(--light-color); }
 	progress::-moz-progress-bar { background-color: var(--primary-color); }
 	progress::-webkit-progress-value { background-color: var(--primary-color); }
@@ -367,20 +519,54 @@
 
 	/* ---- Container ---- */
 	.container{
-		display: grid;
-		height: 100vh;
+		position: relative;
 		padding: 1rem;
+		height: 100vh;
 		box-sizing: border-box;
+	}
+	.container .grid{
+		display: grid;
+		height: 100%;
 		grid-template-rows: auto 1fr auto;
 	}
 
-	/* ---- Breadcrumbs ---- */
-	.breadcrumbs{ padding: 1rem 0 0 1rem; }
+	/* ---- Header ---- */
+	.header{ 
+		display: grid;
+		padding: 0 0 0 1rem;
+		grid-template-columns: 1fr auto;
+	 }
+	.breadcrumbs{ 
+		padding: 1rem 1rem 0 0;
+	}
+
+	.header button{
+		padding: 1rem 2rem 1rem 2rem;
+		font-size: 1rem;
+	}
+
+	/** ---- Menu ---- **/
+	.menu{
+		background-color: var(--dark-color);
+		position: absolute;
+		box-sizing: border-box;
+		top: 4.225rem;
+		right: 2rem;
+		width: auto;
+		overflow: hidden;
+	}
+	.menu-item{
+		padding: 1rem;
+		color: var(--light-color);
+	}
+	.menu-item:hover{
+		color: var(--primary-color);
+	}
 
 	/* ---- Playlist ---- */
 	.playlist{
 		overflow: hidden;
-		padding: 1rem;
+		padding: 0 1rem 1rem 1rem;
 	}
 	.playlist_items_wrapper{
 		height: 100%;
@@ -414,7 +600,7 @@
 		white-space: nowrap;
 		overflow: hidden;
 	}
-	.progress{ padding-bottom : 1rem; }
+	.progress{ align-items : 1rem; }
 	progress {
 		border: 0;
 		display: block;
@@ -428,13 +614,17 @@
 		padding: 0.25rem;
 		color: var(--dark-color);
 		background-color: var(--primary-color);
+		z-index: 1;
+	}
+	.controls{
+		padding-top: 1rem;
 	}
 	.flexbox{ display:flex; }
 	.flexbox button{ 
 		flex: 1 1 0px; 
-		margin: 0.25rem; 
+		margin: 0.125rem; 
 	}
-	button{
+	.player button{
 		font-family: inherit;
 		font-size: 1.5rem;
 		height: 3.5rem;
@@ -442,12 +632,13 @@
 		border-radius: 0;
 		outline: none;				
 	}
-	button::-moz-focus-inner {
+	.player button::-moz-focus-inner {
 		border: 0;
 		padding: 1rem;
 	}
 
 	@media (max-width: 640px) {
 		.container { padding: 0; }
+		.menu { top: 3.225rem; right: 1rem;}
 	}
 </style>
