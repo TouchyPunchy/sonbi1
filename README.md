@@ -1,6 +1,6 @@
 # SonBi1
 
-Mini audio player in [Svelte](https://svelte.dev/) ([demo](https://labelcarrote.com/sonbi1))
+Mini audio player in [Svelte](https://svelte.dev/) ([demo](https://thebreaks.github.io/sonbi1/))
 
 <img src="doc/capture/sonbi1_04.png">
 
