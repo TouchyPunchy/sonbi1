@@ -1,5 +1,6 @@
 <script>
 	import { onMount, onDestroy } from 'svelte';
+	import { current_theme } from './stores.js';
 
 	export let audio_ctx;
 	export let media_source;
@@ -51,10 +52,12 @@
 		function draw() {
 			draw_visual = requestAnimationFrame(draw);
 			analyser.getByteTimeDomainData(dataArray);
-			ctx.fillStyle = bg_color;
+			ctx.fillStyle = $current_theme.dark;//bg_color;
 			ctx.fillRect(0, 0, w, h);
 			ctx.lineWidth = 2;
-			ctx.strokeStyle = stroke_color;
+			ctx.strokeStyle = $current_theme.primary;//stroke_color;
+			// console.log(ctx.fillStyle);
+			// console.log(ctx.strokeStyle);
 			ctx.beginPath();
 			let sliceWidth = w * 1.0 / bufferLength;
 			let x = 0;
@@ -81,19 +84,35 @@
 		function draw() {
 			draw_visual = requestAnimationFrame(draw);
 			analyser.getByteFrequencyData(dataArray);
-			ctx.fillStyle = bg_color;
+			ctx.fillStyle = $current_theme.dark;//bg_color;
 			ctx.fillRect(0, 0, w, h);
 			let barWidth = Math.floor((w / bufferLength) * 2);
 			let barHeight;
 			let x = 0;
+			let fill = hexToRgb($current_theme.primary);
 			for(var i = 0; i < bufferLength; i++) {
 				barHeight = dataArray[i] / 2;
-				ctx.fillStyle = 'rgb(' + (barHeight + 100) + ',100,00)';
+				ctx.fillStyle = 'rgb(' 
+					+ Math.max((fill.r - (barHeight)),0) +','
+					+ Math.max((fill.g - (barHeight)),0)+','
+					+ Math.max((fill.b - (barHeight)),0)
+					+')';
+
+				// ctx.fillStyle = 'rgb(' + (barHeight + 100) + ',100,00)';
 				ctx.fillRect(x,h - barHeight, barWidth, barHeight);
 				x += barWidth + 1;
 			}
 		}
 		draw();
+	}
+
+	function hexToRgb(hex) {
+		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+		return result ? {
+			r: parseInt(result[1], 16),
+			g: parseInt(result[2], 16),
+			b: parseInt(result[3], 16)
+		} : null;
 	}
 </script>
 

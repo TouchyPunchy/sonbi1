@@ -4,9 +4,10 @@
 	import { onMount } from 'svelte';
 	import { quintOut } from 'svelte/easing';
 	import Visualizer from './Visualizer.svelte';
+	import Themes from './Themes.svelte';
 	import KeyBindings from './KeyBindings.svelte';
 	import About from './About.svelte';
-
+	import { current_theme, themes } from './stores.js';
 	export let path_to_music = 'sounds';
 
 	const playlist_file_name = 'playlist.json';
@@ -45,6 +46,7 @@
 	let key_code;
 
 	let menu = false;
+	let show_themes = false;
 	let show_keybindings = false;
 	let show_about = false;
 	let deferred_prompt;
@@ -190,6 +192,9 @@
 		menu = !menu;
 	}
 
+	function toggle_themes(){
+		show_themes = !show_themes;
+	}
 	function toggle_keybindings(){
 		show_keybindings = !show_keybindings;
 	}
@@ -207,6 +212,7 @@
 
 	function handle_close(event){
 		switch(event.detail.page){
+			case 'themes' : toggle_themes(); break;
 			case 'keybindings' : toggle_keybindings(); break;
 			case 'about' : toggle_about(); break;
 		}
@@ -286,8 +292,6 @@
 	// ---- PWA ----
 	
 	function save_install_prompt(event){
-		console.log('save_install_prompt');
-		console.log(event);
 		event.preventDefault();
 		show_install_button = true;
 		deferred_prompt = event;
@@ -364,6 +368,9 @@
 	<strong>{format(progress_indicator_value)}</strong>
 </div>
 <div class="container">
+	{#if show_themes === true}
+	<Themes on:close={handle_close}/>
+	{/if}
 	{#if show_keybindings === true}
 	<KeyBindings on:close={handle_close}/>
 	{/if}
@@ -376,7 +383,10 @@
 				in:scale_from_angle="{{duration: 200}}"
 				out:scale_from_angle="{{duration: 200}}"
 				on:click={e => e.stopPropagation()}>
-				<div class="menu-item">Color Themes</div>
+				<div class="menu-item"
+					on:click={toggle_themes}>
+					Color Themes
+				</div>
 				<div class="menu-item"
 					on:click={toggle_keybindings}>
 					Key Bindings
@@ -494,7 +504,6 @@
 		--dark-color: #2b2b2b;
 		--primary-color: #ff9900;
 		--secondary-color: #393939;
-		--dark-color-transparent: #2b2b2bcc; 
 	}
 	.text-light{ color: var(--light-color); }
 	.text-dark{ color: var(--dark-color); }
