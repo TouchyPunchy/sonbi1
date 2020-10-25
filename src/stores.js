@@ -49,10 +49,11 @@ const THEMES = [
 // ["#8D7966","#A8A39D","#D8C8B8","#E2DDD9","#F8F1E9"],
 
 function createThemeStore(theme) {
-    const store = writable(theme);
+    const theme_store = writable(theme);
 
     function set(new_theme){
-        store.set(new_theme);
+        theme_store.set(new_theme);
+        localStorage.setItem('current_theme',JSON.stringify(new_theme));
         document.documentElement.style.setProperty('--dark-color', new_theme.dark);
         document.documentElement.style.setProperty('--light-color', new_theme.light);
         document.documentElement.style.setProperty('--primary-color', new_theme.primary);
@@ -61,7 +62,7 @@ function createThemeStore(theme) {
     }
     return {
         set,
-        subscribe: store.subscribe,
+        subscribe: theme_store.subscribe,
         //reset: () => set(themes[0])
     }
 }

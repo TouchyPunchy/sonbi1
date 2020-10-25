@@ -1,10 +1,35 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
 	import { current_theme, themes } from './stores.js';
+
 	const page_name = 'themes';
     const dispatch = createEventDispatcher();
 
-    
+    function mix_theme(theme){
+		let colors = [theme.dark,theme.light,theme.primary,theme.secondary, theme.body];
+		let mixed_theme = { name: theme.name +" mix", dark: '',	light: '', primary: '',	secondary: '', body: ''	};
+		mixed_theme.dark = colors.splice(Math.floor(Math.random() * Math.floor(colors.length)),1);
+		mixed_theme.light = colors.splice(Math.floor(Math.random() * Math.floor(colors.length)),1);
+		mixed_theme.primary = colors.splice(Math.floor(Math.random() * Math.floor(colors.length)),1);
+		mixed_theme.secondary = colors.splice(Math.floor(Math.random() * Math.floor(colors.length)),1);
+		mixed_theme.body = colors.splice(Math.floor(Math.random() * Math.floor(colors.length)),1);
+		return mixed_theme;
+	}
+
+	function random_theme(){
+		let colors = $themes.slice().map(t => [t.dark,t.light,t.primary,t.secondary, t.body]).flat();
+		let mixed_theme = { name: "RANDOM", dark: '',	light: '', primary: '',	secondary: '', body: ''	};
+		mixed_theme.dark = colors.splice(Math.floor(Math.random() * Math.floor(colors.length)),1);
+		mixed_theme.light = colors.splice(Math.floor(Math.random() * Math.floor(colors.length)),1);
+		mixed_theme.primary = colors.splice(Math.floor(Math.random() * Math.floor(colors.length)),1);
+		mixed_theme.secondary = colors.splice(Math.floor(Math.random() * Math.floor(colors.length)),1);
+		mixed_theme.body = colors.splice(Math.floor(Math.random() * Math.floor(colors.length)),1);
+		return mixed_theme;
+	}
+
+	function set_random_mix_theme(){
+		current_theme.set(random_theme());
+	}
     
 	function close(e) {
 		e.stopPropagation();
@@ -32,7 +57,7 @@
 			<div class="themes_items_wrapper bg-light text-dark">
 				<div class="themes_items">
 					{#each $themes as theme}
-					<div class="theme_item" on:click={current_theme.set(theme)}>
+					<div class="theme_item" on:click={current_theme.set(mix_theme(theme))}>
 						<div class="theme-colors">
 							<div style="background-color:{theme.dark}"></div>
 							<div style="background-color:{theme.light}"></div>
@@ -45,10 +70,12 @@
 					{/each}
 				</div>
 			</div>
-		</div>Z
+		</div>
 		<div class="preview">
 			<div>preview</div>
-			<div>random</div>
+			<div  on:click={set_random_mix_theme}>
+				<div class="random_btn">?</div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -75,7 +102,7 @@
 	.container .grid{
 		display: grid;
 		height: 100%;
-		grid-template-rows: auto 1fr auto;
+		grid-template-rows: auto 1fr 30%;
 	}
 	/* ---- Playlist ---- */
 	.themes{
@@ -118,6 +145,19 @@
 		width: 2rem;
 		height: 1.5rem;
 	}
+	/* ---- Preview ---- */
+	.preview{
+		display: grid;
+		padding: 1rem;
+		grid-template-columns: 50% 50%;
+	}
+	.random_btn{
+		background-color: pink;
+		/* padding: 1rem 0; */
+		font-size: 4rem;
+		vertical-align: center;
+	}
+
 	@media (max-width: 640px) {
 		.container { right: 0; left: 0; top: 0; bottom: 0;}
 	}

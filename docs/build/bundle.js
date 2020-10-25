@@ -799,10 +799,11 @@ var app = (function () {
     // ["#8D7966","#A8A39D","#D8C8B8","#E2DDD9","#F8F1E9"],
 
     function createThemeStore(theme) {
-        const store = writable(theme);
+        const theme_store = writable(theme);
 
         function set(new_theme){
-            store.set(new_theme);
+            theme_store.set(new_theme);
+            localStorage.setItem('current_theme',JSON.stringify(new_theme));
             document.documentElement.style.setProperty('--dark-color', new_theme.dark);
             document.documentElement.style.setProperty('--light-color', new_theme.light);
             document.documentElement.style.setProperty('--primary-color', new_theme.primary);
@@ -811,7 +812,7 @@ var app = (function () {
         }
         return {
             set,
-            subscribe: store.subscribe,
+            subscribe: theme_store.subscribe,
             //reset: () => set(themes[0])
         }
     }
@@ -1098,11 +1099,11 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[4] = list[i];
+    	child_ctx[6] = list[i];
     	return child_ctx;
     }
 
-    // (34:5) {#each $themes as theme}
+    // (59:5) {#each $themes as theme}
     function create_each_block(ctx) {
     	let div7;
     	let div5;
@@ -1117,7 +1118,7 @@ var app = (function () {
     	let div4;
     	let t4;
     	let div6;
-    	let t5_value = /*theme*/ ctx[4].name + "";
+    	let t5_value = /*theme*/ ctx[6].name + "";
     	let t5;
     	let t6;
     	let mounted;
@@ -1140,27 +1141,27 @@ var app = (function () {
     			div6 = element("div");
     			t5 = text(t5_value);
     			t6 = space();
-    			set_style(div0, "background-color", /*theme*/ ctx[4].dark);
-    			attr_dev(div0, "class", "svelte-1xq3y5x");
-    			add_location(div0, file$1, 36, 7, 1252);
-    			set_style(div1, "background-color", /*theme*/ ctx[4].light);
-    			attr_dev(div1, "class", "svelte-1xq3y5x");
-    			add_location(div1, file$1, 37, 7, 1310);
-    			set_style(div2, "background-color", /*theme*/ ctx[4].primary);
-    			attr_dev(div2, "class", "svelte-1xq3y5x");
-    			add_location(div2, file$1, 38, 7, 1369);
-    			set_style(div3, "background-color", /*theme*/ ctx[4].secondary);
-    			attr_dev(div3, "class", "svelte-1xq3y5x");
-    			add_location(div3, file$1, 39, 7, 1430);
-    			set_style(div4, "background-color", /*theme*/ ctx[4].body);
-    			attr_dev(div4, "class", "svelte-1xq3y5x");
-    			add_location(div4, file$1, 40, 7, 1493);
-    			attr_dev(div5, "class", "theme-colors svelte-1xq3y5x");
-    			add_location(div5, file$1, 35, 6, 1217);
-    			attr_dev(div6, "class", "theme-name svelte-1xq3y5x");
-    			add_location(div6, file$1, 42, 6, 1564);
-    			attr_dev(div7, "class", "theme_item svelte-1xq3y5x");
-    			add_location(div7, file$1, 34, 5, 1149);
+    			set_style(div0, "background-color", /*theme*/ ctx[6].dark);
+    			attr_dev(div0, "class", "svelte-1lh6yn");
+    			add_location(div0, file$1, 61, 7, 2802);
+    			set_style(div1, "background-color", /*theme*/ ctx[6].light);
+    			attr_dev(div1, "class", "svelte-1lh6yn");
+    			add_location(div1, file$1, 62, 7, 2860);
+    			set_style(div2, "background-color", /*theme*/ ctx[6].primary);
+    			attr_dev(div2, "class", "svelte-1lh6yn");
+    			add_location(div2, file$1, 63, 7, 2919);
+    			set_style(div3, "background-color", /*theme*/ ctx[6].secondary);
+    			attr_dev(div3, "class", "svelte-1lh6yn");
+    			add_location(div3, file$1, 64, 7, 2980);
+    			set_style(div4, "background-color", /*theme*/ ctx[6].body);
+    			attr_dev(div4, "class", "svelte-1lh6yn");
+    			add_location(div4, file$1, 65, 7, 3043);
+    			attr_dev(div5, "class", "theme-colors svelte-1lh6yn");
+    			add_location(div5, file$1, 60, 6, 2767);
+    			attr_dev(div6, "class", "theme-name svelte-1lh6yn");
+    			add_location(div6, file$1, 67, 6, 3114);
+    			attr_dev(div7, "class", "theme_item svelte-1lh6yn");
+    			add_location(div7, file$1, 59, 5, 2688);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div7, anchor);
@@ -1184,7 +1185,7 @@ var app = (function () {
     					div7,
     					"click",
     					function () {
-    						if (is_function(current_theme.set(/*theme*/ ctx[4]))) current_theme.set(/*theme*/ ctx[4]).apply(this, arguments);
+    						if (is_function(current_theme.set(mix_theme(/*theme*/ ctx[6])))) current_theme.set(mix_theme(/*theme*/ ctx[6])).apply(this, arguments);
     					},
     					false,
     					false,
@@ -1197,27 +1198,27 @@ var app = (function () {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
 
-    			if (dirty & /*$themes*/ 2) {
-    				set_style(div0, "background-color", /*theme*/ ctx[4].dark);
+    			if (dirty & /*$themes*/ 1) {
+    				set_style(div0, "background-color", /*theme*/ ctx[6].dark);
     			}
 
-    			if (dirty & /*$themes*/ 2) {
-    				set_style(div1, "background-color", /*theme*/ ctx[4].light);
+    			if (dirty & /*$themes*/ 1) {
+    				set_style(div1, "background-color", /*theme*/ ctx[6].light);
     			}
 
-    			if (dirty & /*$themes*/ 2) {
-    				set_style(div2, "background-color", /*theme*/ ctx[4].primary);
+    			if (dirty & /*$themes*/ 1) {
+    				set_style(div2, "background-color", /*theme*/ ctx[6].primary);
     			}
 
-    			if (dirty & /*$themes*/ 2) {
-    				set_style(div3, "background-color", /*theme*/ ctx[4].secondary);
+    			if (dirty & /*$themes*/ 1) {
+    				set_style(div3, "background-color", /*theme*/ ctx[6].secondary);
     			}
 
-    			if (dirty & /*$themes*/ 2) {
-    				set_style(div4, "background-color", /*theme*/ ctx[4].body);
+    			if (dirty & /*$themes*/ 1) {
+    				set_style(div4, "background-color", /*theme*/ ctx[6].body);
     			}
 
-    			if (dirty & /*$themes*/ 2 && t5_value !== (t5_value = /*theme*/ ctx[4].name + "")) set_data_dev(t5, t5_value);
+    			if (dirty & /*$themes*/ 1 && t5_value !== (t5_value = /*theme*/ ctx[6].name + "")) set_data_dev(t5, t5_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div7);
@@ -1230,7 +1231,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(34:5) {#each $themes as theme}",
+    		source: "(59:5) {#each $themes as theme}",
     		ctx
     	});
 
@@ -1238,11 +1239,11 @@ var app = (function () {
     }
 
     function create_fragment$1(ctx) {
-    	let div17;
+    	let div18;
     	let span;
     	let i;
     	let t0;
-    	let div16;
+    	let div17;
     	let div9;
     	let h1;
     	let t2;
@@ -1261,21 +1262,21 @@ var app = (function () {
     	let div5;
     	let t9;
     	let div7;
-    	let t10_value = /*$current_theme*/ ctx[0].name + "";
+    	let t10_value = /*$current_theme*/ ctx[1].name + "";
     	let t10;
     	let t11;
     	let div12;
     	let div11;
     	let div10;
     	let t12;
-    	let t13;
-    	let div15;
+    	let div16;
     	let div13;
-    	let t15;
+    	let t14;
+    	let div15;
     	let div14;
     	let mounted;
     	let dispose;
-    	let each_value = /*$themes*/ ctx[1];
+    	let each_value = /*$themes*/ ctx[0];
     	validate_each_argument(each_value);
     	let each_blocks = [];
 
@@ -1285,11 +1286,11 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
-    			div17 = element("div");
+    			div18 = element("div");
     			span = element("span");
     			i = element("i");
     			t0 = space();
-    			div16 = element("div");
+    			div17 = element("div");
     			div9 = element("div");
     			h1 = element("h1");
     			h1.textContent = "Themes";
@@ -1321,67 +1322,69 @@ var app = (function () {
     			}
 
     			t12 = space();
-    			t13 = text("Z\r\n\t\t");
-    			div15 = element("div");
+    			div16 = element("div");
     			div13 = element("div");
     			div13.textContent = "preview";
-    			t15 = space();
+    			t14 = space();
+    			div15 = element("div");
     			div14 = element("div");
-    			div14.textContent = "random";
+    			div14.textContent = "?";
     			attr_dev(i, "class", "fas fa-times");
-    			add_location(i, file$1, 14, 38, 373);
-    			attr_dev(span, "class", "close svelte-1xq3y5x");
-    			add_location(span, file$1, 14, 1, 336);
-    			add_location(h1, file$1, 17, 3, 458);
-    			add_location(div0, file$1, 18, 3, 478);
-    			set_style(div1, "background-color", /*$current_theme*/ ctx[0].dark);
-    			attr_dev(div1, "class", "svelte-1xq3y5x");
-    			add_location(div1, file$1, 21, 5, 572);
-    			set_style(div2, "background-color", /*$current_theme*/ ctx[0].light);
-    			attr_dev(div2, "class", "svelte-1xq3y5x");
-    			add_location(div2, file$1, 22, 5, 637);
-    			set_style(div3, "background-color", /*$current_theme*/ ctx[0].primary);
-    			attr_dev(div3, "class", "svelte-1xq3y5x");
-    			add_location(div3, file$1, 23, 5, 703);
-    			set_style(div4, "background-color", /*$current_theme*/ ctx[0].secondary);
-    			attr_dev(div4, "class", "svelte-1xq3y5x");
-    			add_location(div4, file$1, 24, 5, 771);
-    			set_style(div5, "background-color", /*$current_theme*/ ctx[0].body);
-    			attr_dev(div5, "class", "svelte-1xq3y5x");
-    			add_location(div5, file$1, 25, 5, 841);
-    			attr_dev(div6, "class", "theme-colors svelte-1xq3y5x");
-    			add_location(div6, file$1, 20, 4, 539);
-    			attr_dev(div7, "class", "theme-name svelte-1xq3y5x");
-    			add_location(div7, file$1, 27, 4, 917);
-    			attr_dev(div8, "class", "theme_item svelte-1xq3y5x");
-    			add_location(div8, file$1, 19, 3, 509);
+    			add_location(i, file$1, 39, 38, 1912);
+    			attr_dev(span, "class", "close svelte-1lh6yn");
+    			add_location(span, file$1, 39, 1, 1875);
+    			add_location(h1, file$1, 42, 3, 1997);
+    			add_location(div0, file$1, 43, 3, 2017);
+    			set_style(div1, "background-color", /*$current_theme*/ ctx[1].dark);
+    			attr_dev(div1, "class", "svelte-1lh6yn");
+    			add_location(div1, file$1, 46, 5, 2111);
+    			set_style(div2, "background-color", /*$current_theme*/ ctx[1].light);
+    			attr_dev(div2, "class", "svelte-1lh6yn");
+    			add_location(div2, file$1, 47, 5, 2176);
+    			set_style(div3, "background-color", /*$current_theme*/ ctx[1].primary);
+    			attr_dev(div3, "class", "svelte-1lh6yn");
+    			add_location(div3, file$1, 48, 5, 2242);
+    			set_style(div4, "background-color", /*$current_theme*/ ctx[1].secondary);
+    			attr_dev(div4, "class", "svelte-1lh6yn");
+    			add_location(div4, file$1, 49, 5, 2310);
+    			set_style(div5, "background-color", /*$current_theme*/ ctx[1].body);
+    			attr_dev(div5, "class", "svelte-1lh6yn");
+    			add_location(div5, file$1, 50, 5, 2380);
+    			attr_dev(div6, "class", "theme-colors svelte-1lh6yn");
+    			add_location(div6, file$1, 45, 4, 2078);
+    			attr_dev(div7, "class", "theme-name svelte-1lh6yn");
+    			add_location(div7, file$1, 52, 4, 2456);
+    			attr_dev(div8, "class", "theme_item svelte-1lh6yn");
+    			add_location(div8, file$1, 44, 3, 2048);
     			attr_dev(div9, "class", "header");
-    			add_location(div9, file$1, 16, 2, 433);
-    			attr_dev(div10, "class", "themes_items svelte-1xq3y5x");
-    			add_location(div10, file$1, 32, 4, 1085);
-    			attr_dev(div11, "class", "themes_items_wrapper bg-light text-dark svelte-1xq3y5x");
-    			add_location(div11, file$1, 31, 3, 1026);
-    			attr_dev(div12, "class", "themes bg-dark svelte-1xq3y5x");
-    			add_location(div12, file$1, 30, 2, 993);
-    			add_location(div13, file$1, 49, 3, 1697);
-    			add_location(div14, file$1, 50, 3, 1720);
-    			attr_dev(div15, "class", "preview");
-    			add_location(div15, file$1, 48, 2, 1671);
-    			attr_dev(div16, "class", "grid svelte-1xq3y5x");
-    			add_location(div16, file$1, 15, 1, 411);
-    			attr_dev(div17, "class", "container svelte-1xq3y5x");
-    			add_location(div17, file$1, 13, 0, 310);
+    			add_location(div9, file$1, 41, 2, 1972);
+    			attr_dev(div10, "class", "themes_items svelte-1lh6yn");
+    			add_location(div10, file$1, 57, 4, 2624);
+    			attr_dev(div11, "class", "themes_items_wrapper bg-light text-dark svelte-1lh6yn");
+    			add_location(div11, file$1, 56, 3, 2565);
+    			attr_dev(div12, "class", "themes bg-dark svelte-1lh6yn");
+    			add_location(div12, file$1, 55, 2, 2532);
+    			add_location(div13, file$1, 74, 3, 3246);
+    			attr_dev(div14, "class", "random_btn svelte-1lh6yn");
+    			add_location(div14, file$1, 76, 4, 3313);
+    			add_location(div15, file$1, 75, 3, 3269);
+    			attr_dev(div16, "class", "preview svelte-1lh6yn");
+    			add_location(div16, file$1, 73, 2, 3220);
+    			attr_dev(div17, "class", "grid svelte-1lh6yn");
+    			add_location(div17, file$1, 40, 1, 1950);
+    			attr_dev(div18, "class", "container svelte-1lh6yn");
+    			add_location(div18, file$1, 38, 0, 1849);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div17, anchor);
-    			append_dev(div17, span);
+    			insert_dev(target, div18, anchor);
+    			append_dev(div18, span);
     			append_dev(span, i);
-    			append_dev(div17, t0);
-    			append_dev(div17, div16);
-    			append_dev(div16, div9);
+    			append_dev(div18, t0);
+    			append_dev(div18, div17);
+    			append_dev(div17, div9);
     			append_dev(div9, h1);
     			append_dev(div9, t2);
     			append_dev(div9, div0);
@@ -1400,8 +1403,8 @@ var app = (function () {
     			append_dev(div8, t9);
     			append_dev(div8, div7);
     			append_dev(div7, t10);
-    			append_dev(div16, t11);
-    			append_dev(div16, div12);
+    			append_dev(div17, t11);
+    			append_dev(div17, div12);
     			append_dev(div12, div11);
     			append_dev(div11, div10);
 
@@ -1409,43 +1412,47 @@ var app = (function () {
     				each_blocks[i].m(div10, null);
     			}
 
-    			append_dev(div12, t12);
-    			append_dev(div16, t13);
+    			append_dev(div17, t12);
+    			append_dev(div17, div16);
+    			append_dev(div16, div13);
+    			append_dev(div16, t14);
     			append_dev(div16, div15);
-    			append_dev(div15, div13);
-    			append_dev(div15, t15);
     			append_dev(div15, div14);
 
     			if (!mounted) {
-    				dispose = listen_dev(span, "click", /*close*/ ctx[2], false, false, false);
+    				dispose = [
+    					listen_dev(span, "click", /*close*/ ctx[3], false, false, false),
+    					listen_dev(div15, "click", /*set_random_mix_theme*/ ctx[2], false, false, false)
+    				];
+
     				mounted = true;
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*$current_theme*/ 1) {
-    				set_style(div1, "background-color", /*$current_theme*/ ctx[0].dark);
+    			if (dirty & /*$current_theme*/ 2) {
+    				set_style(div1, "background-color", /*$current_theme*/ ctx[1].dark);
     			}
 
-    			if (dirty & /*$current_theme*/ 1) {
-    				set_style(div2, "background-color", /*$current_theme*/ ctx[0].light);
+    			if (dirty & /*$current_theme*/ 2) {
+    				set_style(div2, "background-color", /*$current_theme*/ ctx[1].light);
     			}
 
-    			if (dirty & /*$current_theme*/ 1) {
-    				set_style(div3, "background-color", /*$current_theme*/ ctx[0].primary);
+    			if (dirty & /*$current_theme*/ 2) {
+    				set_style(div3, "background-color", /*$current_theme*/ ctx[1].primary);
     			}
 
-    			if (dirty & /*$current_theme*/ 1) {
-    				set_style(div4, "background-color", /*$current_theme*/ ctx[0].secondary);
+    			if (dirty & /*$current_theme*/ 2) {
+    				set_style(div4, "background-color", /*$current_theme*/ ctx[1].secondary);
     			}
 
-    			if (dirty & /*$current_theme*/ 1) {
-    				set_style(div5, "background-color", /*$current_theme*/ ctx[0].body);
+    			if (dirty & /*$current_theme*/ 2) {
+    				set_style(div5, "background-color", /*$current_theme*/ ctx[1].body);
     			}
 
-    			if (dirty & /*$current_theme*/ 1 && t10_value !== (t10_value = /*$current_theme*/ ctx[0].name + "")) set_data_dev(t10, t10_value);
+    			if (dirty & /*$current_theme*/ 2 && t10_value !== (t10_value = /*$current_theme*/ ctx[1].name + "")) set_data_dev(t10, t10_value);
 
-    			if (dirty & /*current_theme, $themes*/ 2) {
-    				each_value = /*$themes*/ ctx[1];
+    			if (dirty & /*current_theme, mix_theme, $themes*/ 1) {
+    				each_value = /*$themes*/ ctx[0];
     				validate_each_argument(each_value);
     				let i;
 
@@ -1471,10 +1478,10 @@ var app = (function () {
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div17);
+    			if (detaching) detach_dev(div18);
     			destroy_each(each_blocks, detaching);
     			mounted = false;
-    			dispose();
+    			run_all(dispose);
     		}
     	};
 
@@ -1491,16 +1498,60 @@ var app = (function () {
 
     const page_name = "themes";
 
+    function mix_theme(theme) {
+    	let colors = [theme.dark, theme.light, theme.primary, theme.secondary, theme.body];
+
+    	let mixed_theme = {
+    		name: theme.name + " mix",
+    		dark: "",
+    		light: "",
+    		primary: "",
+    		secondary: "",
+    		body: ""
+    	};
+
+    	mixed_theme.dark = colors.splice(Math.floor(Math.random() * Math.floor(colors.length)), 1);
+    	mixed_theme.light = colors.splice(Math.floor(Math.random() * Math.floor(colors.length)), 1);
+    	mixed_theme.primary = colors.splice(Math.floor(Math.random() * Math.floor(colors.length)), 1);
+    	mixed_theme.secondary = colors.splice(Math.floor(Math.random() * Math.floor(colors.length)), 1);
+    	mixed_theme.body = colors.splice(Math.floor(Math.random() * Math.floor(colors.length)), 1);
+    	return mixed_theme;
+    }
+
     function instance$1($$self, $$props, $$invalidate) {
-    	let $current_theme;
     	let $themes;
-    	validate_store(current_theme, "current_theme");
-    	component_subscribe($$self, current_theme, $$value => $$invalidate(0, $current_theme = $$value));
+    	let $current_theme;
     	validate_store(themes, "themes");
-    	component_subscribe($$self, themes, $$value => $$invalidate(1, $themes = $$value));
+    	component_subscribe($$self, themes, $$value => $$invalidate(0, $themes = $$value));
+    	validate_store(current_theme, "current_theme");
+    	component_subscribe($$self, current_theme, $$value => $$invalidate(1, $current_theme = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Themes", slots, []);
     	const dispatch = createEventDispatcher();
+
+    	function random_theme() {
+    		let colors = $themes.slice().map(t => [t.dark, t.light, t.primary, t.secondary, t.body]).flat();
+
+    		let mixed_theme = {
+    			name: "RANDOM",
+    			dark: "",
+    			light: "",
+    			primary: "",
+    			secondary: "",
+    			body: ""
+    		};
+
+    		mixed_theme.dark = colors.splice(Math.floor(Math.random() * Math.floor(colors.length)), 1);
+    		mixed_theme.light = colors.splice(Math.floor(Math.random() * Math.floor(colors.length)), 1);
+    		mixed_theme.primary = colors.splice(Math.floor(Math.random() * Math.floor(colors.length)), 1);
+    		mixed_theme.secondary = colors.splice(Math.floor(Math.random() * Math.floor(colors.length)), 1);
+    		mixed_theme.body = colors.splice(Math.floor(Math.random() * Math.floor(colors.length)), 1);
+    		return mixed_theme;
+    	}
+
+    	function set_random_mix_theme() {
+    		current_theme.set(random_theme());
+    	}
 
     	function close(e) {
     		e.stopPropagation();
@@ -1519,12 +1570,15 @@ var app = (function () {
     		themes,
     		page_name,
     		dispatch,
+    		mix_theme,
+    		random_theme,
+    		set_random_mix_theme,
     		close,
-    		$current_theme,
-    		$themes
+    		$themes,
+    		$current_theme
     	});
 
-    	return [$current_theme, $themes, close];
+    	return [$themes, $current_theme, set_random_mix_theme, close];
     }
 
     class Themes extends SvelteComponentDev {
@@ -2078,24 +2132,24 @@ var app = (function () {
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[76] = list[i];
-    	child_ctx[78] = i;
+    	child_ctx[77] = list[i];
+    	child_ctx[79] = i;
     	return child_ctx;
     }
 
     function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[79] = list[i];
+    	child_ctx[80] = list[i];
     	return child_ctx;
     }
 
     function get_each_context_2(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[82] = list[i];
+    	child_ctx[83] = list[i];
     	return child_ctx;
     }
 
-    // (371:1) {#if show_themes === true}
+    // (380:1) {#if show_themes === true}
     function create_if_block_6(ctx) {
     	let themes_1;
     	let current;
@@ -2129,14 +2183,14 @@ var app = (function () {
     		block,
     		id: create_if_block_6.name,
     		type: "if",
-    		source: "(371:1) {#if show_themes === true}",
+    		source: "(380:1) {#if show_themes === true}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (374:1) {#if show_keybindings === true}
+    // (383:1) {#if show_keybindings === true}
     function create_if_block_5(ctx) {
     	let keybindings;
     	let current;
@@ -2170,14 +2224,14 @@ var app = (function () {
     		block,
     		id: create_if_block_5.name,
     		type: "if",
-    		source: "(374:1) {#if show_keybindings === true}",
+    		source: "(383:1) {#if show_keybindings === true}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (377:1) {#if show_about === true}
+    // (386:1) {#if show_about === true}
     function create_if_block_4(ctx) {
     	let about;
     	let current;
@@ -2211,14 +2265,14 @@ var app = (function () {
     		block,
     		id: create_if_block_4.name,
     		type: "if",
-    		source: "(377:1) {#if show_about === true}",
+    		source: "(386:1) {#if show_about === true}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (381:2) {#if menu}
+    // (390:2) {#if menu}
     function create_if_block_2(ctx) {
     	let div3;
     	let div0;
@@ -2248,13 +2302,13 @@ var app = (function () {
     			div2 = element("div");
     			div2.textContent = "About";
     			attr_dev(div0, "class", "menu-item svelte-16rbwww");
-    			add_location(div0, file$4, 385, 4, 10281);
+    			add_location(div0, file$4, 394, 4, 10508);
     			attr_dev(div1, "class", "menu-item svelte-16rbwww");
-    			add_location(div1, file$4, 389, 4, 10372);
+    			add_location(div1, file$4, 398, 4, 10599);
     			attr_dev(div2, "class", "menu-item svelte-16rbwww");
-    			add_location(div2, file$4, 399, 4, 10615);
+    			add_location(div2, file$4, 408, 4, 10842);
     			attr_dev(div3, "class", "menu pointer svelte-16rbwww");
-    			add_location(div3, file$4, 381, 3, 10116);
+    			add_location(div3, file$4, 390, 3, 10343);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div3, anchor);
@@ -2321,14 +2375,14 @@ var app = (function () {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(381:2) {#if menu}",
+    		source: "(390:2) {#if menu}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (394:4) {#if show_install_button === true}
+    // (403:4) {#if show_install_button === true}
     function create_if_block_3(ctx) {
     	let div;
     	let mounted;
@@ -2339,7 +2393,7 @@ var app = (function () {
     			div = element("div");
     			div.textContent = "Install App";
     			attr_dev(div, "class", "menu-item svelte-16rbwww");
-    			add_location(div, file$4, 394, 4, 10508);
+    			add_location(div, file$4, 403, 4, 10735);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2361,18 +2415,18 @@ var app = (function () {
     		block,
     		id: create_if_block_3.name,
     		type: "if",
-    		source: "(394:4) {#if show_install_button === true}",
+    		source: "(403:4) {#if show_install_button === true}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (409:4) {#each breadcrumbs(path_to_music) as crumb}
+    // (418:4) {#each breadcrumbs(path_to_music) as crumb}
     function create_each_block_2(ctx) {
     	let t0;
     	let span;
-    	let t1_value = filename(/*crumb*/ ctx[82]) + "";
+    	let t1_value = filename(/*crumb*/ ctx[83]) + "";
     	let t1;
     	let t2;
     	let mounted;
@@ -2385,7 +2439,7 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = space();
     			attr_dev(span, "class", "breadcrumb pointer text-primary-hover svelte-16rbwww");
-    			add_location(span, file$4, 410, 4, 10902);
+    			add_location(span, file$4, 419, 4, 11129);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, t0, anchor);
@@ -2398,7 +2452,7 @@ var app = (function () {
     					span,
     					"click",
     					function () {
-    						if (is_function(/*init_playlist*/ ctx[25](/*crumb*/ ctx[82]))) /*init_playlist*/ ctx[25](/*crumb*/ ctx[82]).apply(this, arguments);
+    						if (is_function(/*init_playlist*/ ctx[25](/*crumb*/ ctx[83]))) /*init_playlist*/ ctx[25](/*crumb*/ ctx[83]).apply(this, arguments);
     					},
     					false,
     					false,
@@ -2410,7 +2464,7 @@ var app = (function () {
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if (dirty[0] & /*path_to_music*/ 1 && t1_value !== (t1_value = filename(/*crumb*/ ctx[82]) + "")) set_data_dev(t1, t1_value);
+    			if (dirty[0] & /*path_to_music*/ 1 && t1_value !== (t1_value = filename(/*crumb*/ ctx[83]) + "")) set_data_dev(t1, t1_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(t0);
@@ -2424,19 +2478,19 @@ var app = (function () {
     		block,
     		id: create_each_block_2.name,
     		type: "each",
-    		source: "(409:4) {#each breadcrumbs(path_to_music) as crumb}",
+    		source: "(418:4) {#each breadcrumbs(path_to_music) as crumb}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (424:5) {#each folders as folder}
+    // (433:5) {#each folders as folder}
     function create_each_block_1(ctx) {
     	let div;
     	let i;
     	let t0;
-    	let t1_value = filename(/*folder*/ ctx[79]) + "";
+    	let t1_value = filename(/*folder*/ ctx[80]) + "";
     	let t1;
     	let mounted;
     	let dispose;
@@ -2448,9 +2502,9 @@ var app = (function () {
     			t0 = space();
     			t1 = text(t1_value);
     			attr_dev(i, "class", "fas fa-folder svelte-16rbwww");
-    			add_location(i, file$4, 426, 6, 11444);
+    			add_location(i, file$4, 435, 6, 11671);
     			attr_dev(div, "class", "playlist_item text-light bg-secondary svelte-16rbwww");
-    			add_location(div, file$4, 424, 5, 11344);
+    			add_location(div, file$4, 433, 5, 11571);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2463,7 +2517,7 @@ var app = (function () {
     					div,
     					"click",
     					function () {
-    						if (is_function(/*init_playlist*/ ctx[25](/*folder*/ ctx[79]))) /*init_playlist*/ ctx[25](/*folder*/ ctx[79]).apply(this, arguments);
+    						if (is_function(/*init_playlist*/ ctx[25](/*folder*/ ctx[80]))) /*init_playlist*/ ctx[25](/*folder*/ ctx[80]).apply(this, arguments);
     					},
     					false,
     					false,
@@ -2475,7 +2529,7 @@ var app = (function () {
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if (dirty[0] & /*folders*/ 65536 && t1_value !== (t1_value = filename(/*folder*/ ctx[79]) + "")) set_data_dev(t1, t1_value);
+    			if (dirty[0] & /*folders*/ 65536 && t1_value !== (t1_value = filename(/*folder*/ ctx[80]) + "")) set_data_dev(t1, t1_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
@@ -2488,20 +2542,20 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(424:5) {#each folders as folder}",
+    		source: "(433:5) {#each folders as folder}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (430:5) {#each tracks as track,i}
+    // (439:5) {#each tracks as track,i}
     function create_each_block$1(ctx) {
     	let div;
-    	let t0_value = /*i*/ ctx[78] + 1 + "";
+    	let t0_value = /*i*/ ctx[79] + 1 + "";
     	let t0;
     	let t1;
-    	let t2_value = /*track*/ ctx[76] + "";
+    	let t2_value = /*track*/ ctx[77] + "";
     	let t2;
     	let t3;
     	let div_id_value;
@@ -2509,7 +2563,7 @@ var app = (function () {
     	let dispose;
 
     	function click_handler_2(...args) {
-    		return /*click_handler_2*/ ctx[50](/*i*/ ctx[78], ...args);
+    		return /*click_handler_2*/ ctx[50](/*i*/ ctx[79], ...args);
     	}
 
     	const block = {
@@ -2520,9 +2574,9 @@ var app = (function () {
     			t2 = text(t2_value);
     			t3 = space();
     			attr_dev(div, "class", "playlist_item svelte-16rbwww");
-    			attr_dev(div, "id", div_id_value = "item_" + /*i*/ ctx[78]);
-    			toggle_class(div, "selected", /*track_index*/ ctx[18] === /*i*/ ctx[78]);
-    			add_location(div, file$4, 430, 5, 11558);
+    			attr_dev(div, "id", div_id_value = "item_" + /*i*/ ctx[79]);
+    			toggle_class(div, "selected", /*track_index*/ ctx[18] === /*i*/ ctx[79]);
+    			add_location(div, file$4, 439, 5, 11785);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2538,10 +2592,10 @@ var app = (function () {
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if (dirty[0] & /*tracks*/ 131072 && t2_value !== (t2_value = /*track*/ ctx[76] + "")) set_data_dev(t2, t2_value);
+    			if (dirty[0] & /*tracks*/ 131072 && t2_value !== (t2_value = /*track*/ ctx[77] + "")) set_data_dev(t2, t2_value);
 
     			if (dirty[0] & /*track_index*/ 262144) {
-    				toggle_class(div, "selected", /*track_index*/ ctx[18] === /*i*/ ctx[78]);
+    				toggle_class(div, "selected", /*track_index*/ ctx[18] === /*i*/ ctx[79]);
     			}
     		},
     		d: function destroy(detaching) {
@@ -2555,14 +2609,14 @@ var app = (function () {
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(430:5) {#each tracks as track,i}",
+    		source: "(439:5) {#each tracks as track,i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (449:3) {#if viz === true}
+    // (458:3) {#if viz === true}
     function create_if_block_1(ctx) {
     	let visualizer;
     	let updating_audio_ctx;
@@ -2634,14 +2688,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(449:3) {#if viz === true}",
+    		source: "(458:3) {#if viz === true}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (472:5) {:else}
+    // (481:5) {:else}
     function create_else_block(ctx) {
     	let span;
     	let i;
@@ -2651,9 +2705,9 @@ var app = (function () {
     			span = element("span");
     			i = element("i");
     			attr_dev(i, "class", "fas fa-pause svelte-16rbwww");
-    			add_location(i, file$4, 472, 12, 12832);
+    			add_location(i, file$4, 481, 12, 13059);
     			attr_dev(span, "class", "svelte-16rbwww");
-    			add_location(span, file$4, 472, 6, 12826);
+    			add_location(span, file$4, 481, 6, 13053);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -2668,14 +2722,14 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(472:5) {:else}",
+    		source: "(481:5) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (470:5) {#if paused === true}
+    // (479:5) {#if paused === true}
     function create_if_block(ctx) {
     	let span;
     	let i;
@@ -2685,9 +2739,9 @@ var app = (function () {
     			span = element("span");
     			i = element("i");
     			attr_dev(i, "class", "fas fa-play svelte-16rbwww");
-    			add_location(i, file$4, 470, 12, 12770);
+    			add_location(i, file$4, 479, 12, 12997);
     			attr_dev(span, "class", "svelte-16rbwww");
-    			add_location(span, file$4, 470, 6, 12764);
+    			add_location(span, file$4, 479, 6, 12991);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -2702,7 +2756,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(470:5) {#if paused === true}",
+    		source: "(479:5) {#if paused === true}",
     		ctx
     	});
 
@@ -2923,99 +2977,99 @@ var app = (function () {
     			button8 = element("button");
     			i8 = element("i");
     			attr_dev(strong0, "class", "svelte-16rbwww");
-    			add_location(strong0, file$4, 367, 1, 9764);
+    			add_location(strong0, file$4, 376, 1, 9991);
     			attr_dev(div0, "class", "progress_indicator svelte-16rbwww");
     			set_style(div0, "top", /*progress_indicator_top*/ ctx[14]);
     			set_style(div0, "left", /*progress_indicator_left*/ ctx[15] + "px");
     			toggle_class(div0, "hidden", /*progress_indicator_visible*/ ctx[13] === false);
-    			add_location(div0, file$4, 363, 0, 9567);
+    			add_location(div0, file$4, 372, 0, 9794);
     			attr_dev(i0, "class", "fas fa-folder-open svelte-16rbwww");
-    			add_location(i0, file$4, 407, 10, 10797);
+    			add_location(i0, file$4, 416, 10, 11024);
     			attr_dev(span0, "class", "svelte-16rbwww");
-    			add_location(span0, file$4, 407, 4, 10791);
+    			add_location(span0, file$4, 416, 4, 11018);
     			attr_dev(div1, "class", "breadcrumbs svelte-16rbwww");
-    			add_location(div1, file$4, 406, 3, 10760);
+    			add_location(div1, file$4, 415, 3, 10987);
     			attr_dev(i1, "class", "fas fa-ellipsis-v svelte-16rbwww");
-    			add_location(i1, file$4, 417, 4, 11120);
+    			add_location(i1, file$4, 426, 4, 11347);
     			attr_dev(button0, "class", "pointer svelte-16rbwww");
-    			add_location(button0, file$4, 416, 3, 11059);
+    			add_location(button0, file$4, 425, 3, 11286);
     			attr_dev(div2, "class", "header bg-dark text-light svelte-16rbwww");
-    			add_location(div2, file$4, 405, 2, 10716);
+    			add_location(div2, file$4, 414, 2, 10943);
     			attr_dev(div3, "class", "playlist_items svelte-16rbwww");
-    			add_location(div3, file$4, 422, 4, 11277);
+    			add_location(div3, file$4, 431, 4, 11504);
     			attr_dev(div4, "class", "playlist_items_wrapper bg-light text-dark svelte-16rbwww");
-    			add_location(div4, file$4, 421, 3, 11216);
+    			add_location(div4, file$4, 430, 3, 11443);
     			attr_dev(div5, "class", "playlist bg-dark svelte-16rbwww");
-    			add_location(div5, file$4, 420, 2, 11181);
+    			add_location(div5, file$4, 429, 2, 11408);
     			attr_dev(audio_1, "id", "audio");
     			attr_dev(audio_1, "class", "svelte-16rbwww");
     			if (/*duration*/ ctx[4] === void 0) add_render_callback(() => /*audio_1_durationchange_handler*/ ctx[53].call(audio_1));
-    			add_location(audio_1, file$4, 441, 3, 11808);
+    			add_location(audio_1, file$4, 450, 3, 12035);
     			attr_dev(strong1, "class", "svelte-16rbwww");
-    			add_location(strong1, file$4, 452, 23, 12095);
+    			add_location(strong1, file$4, 461, 23, 12322);
     			attr_dev(span1, "class", "time svelte-16rbwww");
-    			add_location(span1, file$4, 452, 4, 12076);
+    			add_location(span1, file$4, 461, 4, 12303);
     			attr_dev(div6, "class", "info text-light svelte-16rbwww");
-    			add_location(div6, file$4, 451, 3, 12041);
+    			add_location(div6, file$4, 460, 3, 12268);
     			attr_dev(progress, "class", "bg-light svelte-16rbwww");
     			progress.value = progress_value_value = /*time*/ ctx[3] / /*duration*/ ctx[4] || 0;
-    			add_location(progress, file$4, 455, 4, 12216);
+    			add_location(progress, file$4, 464, 4, 12443);
     			attr_dev(div7, "class", "progress svelte-16rbwww");
-    			add_location(div7, file$4, 454, 3, 12188);
+    			add_location(div7, file$4, 463, 3, 12415);
     			attr_dev(i2, "class", "fas fa-step-backward svelte-16rbwww");
-    			add_location(i2, file$4, 466, 32, 12610);
+    			add_location(i2, file$4, 475, 32, 12837);
     			attr_dev(button1, "title", "Previous track");
     			attr_dev(button1, "class", "svelte-16rbwww");
-    			add_location(button1, file$4, 465, 5, 12545);
+    			add_location(button1, file$4, 474, 5, 12772);
     			attr_dev(button2, "title", "Play / Pause");
     			attr_dev(button2, "class", "svelte-16rbwww");
-    			add_location(button2, file$4, 467, 5, 12663);
+    			add_location(button2, file$4, 476, 5, 12890);
     			attr_dev(i3, "class", "fas fa-stop svelte-16rbwww");
-    			add_location(i3, file$4, 476, 22, 12947);
+    			add_location(i3, file$4, 485, 22, 13174);
     			attr_dev(button3, "title", "Stop");
     			attr_dev(button3, "class", "svelte-16rbwww");
-    			add_location(button3, file$4, 475, 5, 12903);
+    			add_location(button3, file$4, 484, 5, 13130);
     			attr_dev(i4, "class", "fas fa-step-forward svelte-16rbwww");
-    			add_location(i4, file$4, 478, 28, 13047);
+    			add_location(i4, file$4, 487, 28, 13274);
     			attr_dev(button4, "title", "Next track");
     			attr_dev(button4, "class", "svelte-16rbwww");
-    			add_location(button4, file$4, 477, 5, 12991);
+    			add_location(button4, file$4, 486, 5, 13218);
     			attr_dev(div8, "class", "flexbox svelte-16rbwww");
-    			add_location(div8, file$4, 464, 4, 12517);
+    			add_location(div8, file$4, 473, 4, 12744);
     			attr_dev(i5, "class", "fas fa-random svelte-16rbwww");
-    			add_location(i5, file$4, 483, 32, 13230);
+    			add_location(i5, file$4, 492, 32, 13457);
     			attr_dev(button5, "title", "Shuffle");
     			attr_dev(button5, "class", "svelte-16rbwww");
     			toggle_class(button5, "bg-primary", /*shuffle*/ ctx[9]);
-    			add_location(button5, file$4, 481, 5, 13138);
+    			add_location(button5, file$4, 490, 5, 13365);
     			attr_dev(i6, "class", "fas fa-redo svelte-16rbwww");
-    			add_location(i6, file$4, 486, 29, 13365);
+    			add_location(i6, file$4, 495, 29, 13592);
     			attr_dev(button6, "title", "Loop track");
     			attr_dev(button6, "class", "svelte-16rbwww");
     			toggle_class(button6, "bg-primary", /*loop*/ ctx[8]);
-    			add_location(button6, file$4, 484, 5, 13276);
+    			add_location(button6, file$4, 493, 5, 13503);
     			attr_dev(i7, "class", "fas fa-volume-mute svelte-16rbwww");
-    			add_location(i7, file$4, 489, 36, 13509);
+    			add_location(i7, file$4, 498, 36, 13736);
     			attr_dev(button7, "title", "Mute / Unmute");
     			attr_dev(button7, "class", "svelte-16rbwww");
     			toggle_class(button7, "bg-primary", /*mute*/ ctx[7]);
-    			add_location(button7, file$4, 487, 5, 13409);
+    			add_location(button7, file$4, 496, 5, 13636);
     			attr_dev(i8, "class", "fas fa-signal svelte-16rbwww");
-    			add_location(i8, file$4, 492, 28, 13651);
+    			add_location(i8, file$4, 501, 28, 13878);
     			attr_dev(button8, "title", "Visualization");
     			attr_dev(button8, "class", "svelte-16rbwww");
     			toggle_class(button8, "bg-primary", /*viz*/ ctx[10]);
-    			add_location(button8, file$4, 490, 5, 13560);
+    			add_location(button8, file$4, 499, 5, 13787);
     			attr_dev(div9, "class", "flexbox svelte-16rbwww");
-    			add_location(div9, file$4, 480, 4, 13110);
+    			add_location(div9, file$4, 489, 4, 13337);
     			attr_dev(div10, "class", "controls svelte-16rbwww");
-    			add_location(div10, file$4, 463, 3, 12489);
+    			add_location(div10, file$4, 472, 3, 12716);
     			attr_dev(div11, "class", "player bg-dark svelte-16rbwww");
-    			add_location(div11, file$4, 440, 2, 11774);
+    			add_location(div11, file$4, 449, 2, 12001);
     			attr_dev(div12, "class", "grid svelte-16rbwww");
-    			add_location(div12, file$4, 379, 1, 10078);
+    			add_location(div12, file$4, 388, 1, 10305);
     			attr_dev(div13, "class", "container svelte-16rbwww");
-    			add_location(div13, file$4, 369, 0, 9825);
+    			add_location(div13, file$4, 378, 0, 10052);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -3524,10 +3578,18 @@ var app = (function () {
     	let show_install_button = false;
 
     	onMount(() => {
+    		init_theme();
     		init_playlist(path_to_music);
     		init_mediasession();
     		init_service_worker();
     	});
+
+    	function init_theme() {
+    		if (localStorage !== undefined) {
+    			let saved_theme = localStorage.getItem("current_theme");
+    			if (saved_theme !== null) current_theme.set(JSON.parse(saved_theme));
+    		}
+    	}
 
     	function init_audio_context() {
     		let options = {
@@ -3944,6 +4006,7 @@ var app = (function () {
     		show_about,
     		deferred_prompt,
     		show_install_button,
+    		init_theme,
     		init_audio_context,
     		init_playlist,
     		init_mediasession,

@@ -60,10 +60,19 @@
 		: '';
 
 	onMount(() => {
+		init_theme();
 		init_playlist(path_to_music);
 		init_mediasession();
 		init_service_worker();
 	});
+
+	function init_theme(){
+		if(localStorage !== undefined){
+			let saved_theme = localStorage.getItem('current_theme');
+			if(saved_theme !== null)
+				current_theme.set(JSON.parse(saved_theme));
+		}
+	}
 
 	function init_audio_context(){
 		let options = { 
