@@ -1,6 +1,7 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
 	import { current_theme, themes } from './stores.js';
+	import ThemePreview from './ThemePreview.svelte';
 
 	const page_name = 'themes';
     const dispatch = createEventDispatcher();
@@ -41,8 +42,7 @@
 	<div class="grid">
 		<div class="header">
 			<h1>Themes</h1>
-			<div>Current theme :</div>
-			<div class="theme_item">
+			<div class="theme_item selected">
 				<div class="theme-colors">
 					<div style="background-color:{$current_theme.dark}"></div>
 					<div style="background-color:{$current_theme.light}"></div>
@@ -57,7 +57,7 @@
 			<div class="themes_items_wrapper bg-light text-dark">
 				<div class="themes_items">
 					{#each $themes as theme}
-					<div class="theme_item" on:click={current_theme.set(mix_theme(theme))}>
+					<div class="theme_item text-light bg-secondary" on:click={current_theme.set(mix_theme(theme))}>
 						<div class="theme-colors">
 							<div style="background-color:{theme.dark}"></div>
 							<div style="background-color:{theme.light}"></div>
@@ -72,15 +72,20 @@
 			</div>
 		</div>
 		<div class="preview">
-			<div>preview</div>
-			<div  on:click={set_random_mix_theme}>
-				<div class="random_btn">?</div>
+			<ThemePreview/>
+			<div class="preview-random bg-body" on:click={set_random_mix_theme}>
+				<div class="random_btn bg-dark">?</div>
 			</div>
 		</div>
 	</div>
 </div>
 <style>
-    a{ color: var(--primary-color); }
+	.bg-body{ background-color: var(--body-color); }
+	.text-light{ color: var(--light-color); }
+	.text-dark{ color: var(--dark-color); }
+	.selected{ background-color: var(--primary-color); }
+	.bg-secondary{ background-color: var(--secondary-color); }
+	.bg-dark{ background-color: var(--dark-color); }
 	.close{
 		cursor: pointer;
 		position: absolute;
@@ -102,7 +107,7 @@
 	.container .grid{
 		display: grid;
 		height: 100%;
-		grid-template-rows: auto 1fr 30%;
+		grid-template-rows: auto 1fr auto;
 	}
 	/* ---- Playlist ---- */
 	.themes{
@@ -148,14 +153,19 @@
 	/* ---- Preview ---- */
 	.preview{
 		display: grid;
-		padding: 1rem;
+		padding: 1rem 0;
 		grid-template-columns: 50% 50%;
 	}
+	.preview-random{
+		padding: 1rem 1rem 1rem 0;
+	}
 	.random_btn{
-		background-color: pink;
-		/* padding: 1rem 0; */
-		font-size: 4rem;
-		vertical-align: center;
+		height: 100%; 
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		font-size: 6rem;
 	}
 
 	@media (max-width: 640px) {
